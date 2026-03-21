@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BHAT NETWORK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bhat: {
+                            bg: '#F9F9F7',
+                            ink: '#1A1A1A',
+                            surface: '#FFFFFF',
+                            accent: '#C25E2A',
+                            muted: '#8C8C85'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['"Cormorant Garamond"', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #F9F9F7;
+            color: #1A1A1A;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F9F9F7;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D6D6D6;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #A3A3A3;
+        }
+
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding-bottom: 100px;
+        }
+        .page.active {
+            display: block;
+        }
+
+        .ripple {
+            position: relative;
+            overflow: hidden;
+        }
+        .ripple::after {
+            content: "";
+            display: block;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            background-image: radial-gradient(circle, rgba(0,0,0,0.1) 10%, transparent 10.01%);
+            background-repeat: no-repeat;
+            background-position: 50%;
+            transform: scale(10, 10);
+            opacity: 0;
+            transition: transform .5s, opacity 1s;
+        }
+        .ripple:active::after {
+            transform: scale(0, 0);
+            opacity: .3;
+            transition: 0s;
+        }
+
+        .btn-dark.ripple::after {
+            background-image: radial-gradient(circle, rgba(255,255,255,0.2) 10%, transparent 10.01%);
+        }
+        
+        .nav-item.active {
+            color: #1A1A1A;
+        }
+        .nav-item.active i {
+            transform: translateY(-2px);
+            transition: transform 0.3s ease;
+        }
+
+        @keyframes whatsapp-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5); }
+            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+        .whatsapp-float {
+            animation: whatsapp-pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-stone-200 selection:text-bhat-ink">
+
+    <!-- Reactive Background Elements -->
+    <div id="reactive-bg" class="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <i class="fas fa-wrench absolute text-stone-200/40 text-7xl top-[15%] left-[8%] floating-tool" data-speed="2"></i>
+        <i class="fas fa-cog absolute text-stone-200/30 text-9xl top-[65%] left-[4%] floating-tool" data-speed="-3"></i>
+        <i class="fas fa-screwdriver absolute text-stone-200/40 text-8xl top-[20%] right-[10%] floating-tool" data-speed="3.5" style="transform: rotate(45deg);"></i>
+        <i class="fas fa-hammer absolute text-stone-200/40 text-6xl top-[75%] right-[12%] floating-tool" data-speed="-2.5" style="transform: rotate(-15deg);"></i>
+        <i class="fas fa-cogs absolute text-stone-200/30 text-7xl top-[40%] left-[55%] floating-tool" data-speed="1.5"></i>
+        <i class="fas fa-toolbox absolute text-stone-200/40 text-5xl top-[85%] left-[35%] floating-tool" data-speed="-1.5"></i>
+        <i class="fas fa-circle-notch absolute text-stone-200/50 text-4xl top-[30%] left-[30%] floating-tool" data-speed="4"></i>
+        <i class="fas fa-bolt absolute text-stone-200/30 text-6xl top-[55%] right-[30%] floating-tool" data-speed="-2"></i>
+    </div>
+
+    <!-- Loader -->
+    <div id="loader" class="fixed inset-0 z-50 flex items-center justify-center bg-bhat-bg transition-opacity duration-500">
+        <div class="text-center">
+            <div class="w-12 h-12 border-2 border-stone-200 border-t-bhat-ink rounded-full animate-spin mx-auto mb-6"></div>
+            <h2 class="text-xl font-serif font-bold text-bhat-ink tracking-widest uppercase">Bhat Network</h2>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="fixed top-0 w-full z-40 bg-white/80 backdrop-blur-md border-b border-stone-200/60">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="text-lg font-serif font-bold text-bhat-ink tracking-widest uppercase">Bhat <span class="text-stone-400 font-normal">Network</span></div>
+            <div class="hidden md:flex space-x-8 text-sm font-medium text-stone-500">
+                <button onclick="navigate('home')" class="hover:text-bhat-ink transition-colors">Home</button>
+                <button onclick="navigate('explore')" class="hover:text-bhat-ink transition-colors">Explore</button>
+                <button onclick="navigate('add')" class="hover:text-bhat-ink transition-colors">Add Workshop</button>
+                <button onclick="navigate('profile')" class="hover:text-bhat-ink transition-colors">Profile</button>
+                <button onclick="navigate('creator')" class="hover:text-bhat-ink transition-colors">Creator</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-16 relative z-10">
+        <!-- Home Page -->
+        <section id="home" class="page active">
+            <div class="relative min-h-[75vh] flex items-center justify-center overflow-hidden">
+                <div class="absolute inset-0 z-0 opacity-[0.07] bg-[url('https://images.unsplash.com/photo-1625047509168-a71c6f959828?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center bg-fixed parallax-bg grayscale"></div>
+                <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-bhat-bg z-0"></div>
+                
+                <div class="relative z-10 text-center px-4 max-w-3xl mx-auto hero-content mt-10">
+                    <span class="inline-block py-1.5 px-4 rounded-full bg-white border border-stone-200 text-stone-600 text-xs font-semibold tracking-wider uppercase mb-8 shadow-sm">
+                        Kashmir's First Mechanic Network
+                    </span>
+                    <h1 class="text-5xl md:text-7xl font-serif font-medium mb-6 leading-[1.1] text-bhat-ink">
+                        Connect. Compete.<br><span class="italic text-stone-500">Grow.</span>
+                    </h1>
+                    <p class="text-stone-500 text-lg mb-10 max-w-xl mx-auto font-light leading-relaxed">
+                        A curated platform connecting skilled mechanics, premium workshops, and customers across the valley.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button onclick="navigate('add')" class="ripple btn-dark bg-bhat-ink text-white px-8 py-3.5 rounded-full font-medium text-sm hover:bg-stone-800 transition-all shadow-md hover:shadow-lg">
+                            Join the Network
+                        </button>
+                        <button onclick="navigate('explore')" class="ripple bg-white border border-stone-200 text-bhat-ink px-8 py-3.5 rounded-full font-medium text-sm hover:bg-stone-50 transition-all shadow-sm">
+                            Explore Workshops
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="max-w-7xl mx-auto px-6 py-12">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                    <div class="bg-white border border-stone-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-6 rounded-3xl text-center" data-aos="fade-up" data-aos-delay="0">
+                        <div class="text-4xl font-serif font-medium text-bhat-ink mb-1 counter" data-target="150">0</div>
+                        <div class="text-[10px] text-stone-400 font-semibold uppercase tracking-widest">Workshops</div>
+                    </div>
+                    <div class="bg-white border border-stone-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-6 rounded-3xl text-center" data-aos="fade-up" data-aos-delay="100">
+                        <div class="text-4xl font-serif font-medium text-bhat-ink mb-1 counter" data-target="500">0</div>
+                        <div class="text-[10px] text-stone-400 font-semibold uppercase tracking-widest">Mechanics</div>
+                    </div>
+                    <div class="bg-white border border-stone-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-6 rounded-3xl text-center" data-aos="fade-up" data-aos-delay="200">
+                        <div class="text-4xl font-serif font-medium text-bhat-ink mb-1 counter" data-target="10000">0</div>
+                        <div class="text-[10px] text-stone-400 font-semibold uppercase tracking-widest">Customers</div>
+                    </div>
+                    <div class="bg-white border border-stone-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-6 rounded-3xl text-center" data-aos="fade-up" data-aos-delay="300">
+                        <div class="text-4xl font-serif font-medium text-bhat-ink mb-1 counter" data-target="50">0</div>
+                        <div class="text-[10px] text-stone-400 font-semibold uppercase tracking-widest">Locations</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Workshop -->
+            <div class="max-w-7xl mx-auto px-6 py-16">
+                <div class="flex items-center justify-between mb-10">
+                    <h2 class="text-3xl font-serif font-medium text-bhat-ink">Featured <span class="italic text-stone-400">Workshop</span></h2>
+                    <div class="h-[1px] flex-1 bg-stone-200 ml-6"></div>
+                </div>
+
+                <div class="bg-white border border-stone-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] rounded-[2rem] overflow-hidden relative group" data-aos="fade-up">
+                    <div class="grid md:grid-cols-2 gap-0">
+                        <div class="relative h-72 md:h-full overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=1000&auto=format&fit=crop" alt="Aashaq Bike Point" class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000">
+                            <div class="absolute top-6 left-6 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold text-bhat-ink tracking-wider uppercase flex items-center gap-2 shadow-sm">
+                                <i class="fas fa-star text-amber-500"></i> Editor's Choice
+                            </div>
+                        </div>
+                        <div class="flex flex-col justify-center p-8 md:p-12">
+                            <h3 class="text-4xl font-serif font-medium mb-3 text-bhat-ink">Aashaq Bike Point</h3>
+                            <p class="text-stone-500 text-sm mb-8 flex items-center gap-2 font-medium">
+                                <i class="fas fa-map-marker-alt text-stone-300"></i> Villagam, Kashmir
+                            </p>
+                            
+                            <div class="space-y-3 mb-10">
+                                <div class="flex items-center gap-4 bg-stone-50 border border-stone-100 p-4 rounded-2xl">
+                                    <div class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-stone-600">
+                                        <i class="fas fa-phone-alt text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">Contact</div>
+                                        <div class="font-medium text-bhat-ink text-sm">099065 84655</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4 bg-stone-50 border border-stone-100 p-4 rounded-2xl">
+                                    <div class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-stone-600">
+                                        <i class="fas fa-clock text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">Timings</div>
+                                        <div class="font-medium text-bhat-ink text-sm">10 AM – 10 PM <span class="text-red-400 text-xs ml-1 font-normal">(Closed Friday)</span></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <a href="tel:+919906584655" class="ripple bg-white border border-stone-200 hover:bg-stone-50 transition-all p-3 rounded-2xl flex flex-col items-center justify-center gap-2 text-xs font-semibold text-bhat-ink group/btn shadow-sm">
+                                    <i class="fas fa-phone text-stone-400 group-hover/btn:text-bhat-ink transition-colors"></i>
+                                    Call
+                                </a>
+                                <a href="https://g.co/kgs/jH8xfRi" target="_blank" class="ripple bg-white border border-stone-200 hover:bg-stone-50 transition-all p-3 rounded-2xl flex flex-col items-center justify-center gap-2 text-xs font-semibold text-bhat-ink group/btn shadow-sm">
+                                    <i class="fas fa-directions text-stone-400 group-hover/btn:text-blue-500 transition-colors"></i>
+                                    Directions
+                                </a>
+                                <a href="https://youtube.com/@aashaqbikepoint?si=XMJbbCSTaWaL7yU8" target="_blank" class="ripple bg-white border border-stone-200 hover:bg-stone-50 transition-all p-3 rounded-2xl flex flex-col items-center justify-center gap-2 text-xs font-semibold text-bhat-ink group/btn shadow-sm">
+                                    <i class="fab fa-youtube text-stone-400 group-hover/btn:text-red-500 transition-colors"></i>
+                                    YouTube
+                                </a>
+                                <a href="https://www.instagram.com/aashaq_bike_point_villagam" target="_blank" class="ripple bg-white border border-stone-200 hover:bg-stone-50 transition-all p-3 rounded-2xl flex flex-col items-center justify-center gap-2 text-xs font-semibold text-bhat-ink group/btn shadow-sm">
+                                    <i class="fab fa-instagram text-stone-400 group-hover/btn:text-pink-500 transition-colors"></i>
+                                    Instagram
+                                </a>
+                            </div>
+                            
+                            <button onclick="toggleFollow('aashaq-bike-point')" id="btn-follow-aashaq-bike-point" class="mt-6 w-full ripple bg-white border border-stone-200 text-bhat-ink hover:bg-stone-50 transition-all p-4 rounded-2xl font-semibold flex items-center justify-center gap-2 shadow-sm text-sm">
+                                <i class="far fa-heart"></i> <span id="follow-text-aashaq-bike-point">Follow Workshop</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Explore Page -->
+        <section id="explore" class="page">
+            <div class="max-w-7xl mx-auto px-6 py-8">
+                <h2 class="text-3xl font-serif font-medium mb-8 text-bhat-ink" data-aos="fade-right">Explore <span class="italic text-stone-400">Workshops</span></h2>
+                
+                <div class="bg-white border border-stone-200 shadow-sm p-2 rounded-2xl flex items-center mb-10 sticky top-20 z-30" data-aos="fade-up">
+                    <i class="fas fa-search text-stone-400 ml-4"></i>
+                    <input type="text" id="searchInput" placeholder="Search by name, location, or service..." class="bg-transparent border-none outline-none text-bhat-ink w-full p-3 placeholder-stone-400 text-sm">
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="workshopsGrid">
+                    <!-- Cards injected via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Add Workshop Page -->
+        <section id="add" class="page">
+            <div class="max-w-2xl mx-auto px-6 py-12">
+                <div class="text-center mb-12" data-aos="fade-down">
+                    <h2 class="text-3xl font-serif font-medium mb-3 text-bhat-ink">Register <span class="italic text-stone-400">Workshop</span></h2>
+                    <p class="text-stone-500 text-sm">Join the network and elevate your business presence.</p>
+                </div>
+
+                <form id="addWorkshopForm" class="bg-white border border-stone-100 shadow-[0_8px_30px_rgba(0,0,0,0.03)] p-8 md:p-10 rounded-[2rem] space-y-6" data-aos="fade-up">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-semibold text-stone-500 uppercase tracking-wider pl-1">Workshop Name</label>
+                            <input type="text" id="wName" required class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-bhat-ink text-sm focus:border-bhat-ink focus:ring-1 focus:ring-bhat-ink outline-none transition-all">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-semibold text-stone-500 uppercase tracking-wider pl-1">Owner Name</label>
+                            <input type="text" id="wOwner" required class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-bhat-ink text-sm focus:border-bhat-ink focus:ring-1 focus:ring-bhat-ink outline-none transition-all">
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-semibold text-stone-500 uppercase tracking-wider pl-1">Phone Number</label>
+                            <input type="tel" id="wPhone" required class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-bhat-ink text-sm focus:border-bhat-ink focus:ring-1 focus:ring-bhat-ink outline-none transition-all">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[11px] font-semibold text-stone-500 uppercase tracking-wider pl-1">Location</label>
+                            <input type="text" id="wLocation" required class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-bhat-ink text-sm focus:border-bhat-ink focus:ring-1 focus:ring-bhat-ink outline-none transition-all">
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-semibold text-stone-500 uppercase tracking-wider pl-1">Services Offered (comma separated)</label>
+                        <textarea id="wServices" required rows="3" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-bhat-ink text-sm focus:border-bhat-ink focus:ring-1 focus:ring-bhat-ink outline-none transition-all resize-none"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full ripple btn-dark bg-bhat-ink text-white font-medium text-sm p-4 rounded-2xl hover:bg-stone-800 transition-all shadow-md mt-4">
+                        Submit Registration
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Profile Page -->
+        <section id="profile" class="page">
+            <div class="max-w-2xl mx-auto px-6 py-12">
+                <div class="bg-white border border-stone-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] p-10 rounded-[2rem] mb-10 text-center relative overflow-hidden" data-aos="fade-down">
+                    <div class="relative z-10">
+                        <div class="w-24 h-24 bg-stone-50 border border-stone-200 rounded-full mx-auto mb-5 flex items-center justify-center text-3xl text-stone-300">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="flex items-center justify-center gap-3 mb-2">
+                            <h2 class="text-3xl font-serif font-medium text-bhat-ink" id="profileNameDisplay">Guest User</h2>
+                            <button onclick="editProfileName()" class="text-stone-400 hover:text-bhat-ink transition-colors text-sm"><i class="fas fa-edit"></i></button>
+                        </div>
+                        <p class="text-stone-400 text-xs uppercase tracking-widest font-semibold">Member since 2026</p>
+                    </div>
+                </div>
+
+                <h3 class="text-lg font-serif font-medium mb-6 flex items-center gap-2 text-bhat-ink" data-aos="fade-right">
+                    <i class="fas fa-bookmark text-stone-300 text-sm"></i> Saved Workshops
+                </h3>
+                
+                <div id="followedList" class="space-y-3" data-aos="fade-up">
+                    <div class="text-center text-stone-400 py-10 text-sm bg-white border border-stone-100 border-dashed rounded-3xl" id="emptyFollowed">
+                        You haven't saved any workshops yet.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Creator Page -->
+        <section id="creator" class="page">
+            <div class="max-w-2xl mx-auto px-6 py-12 relative">
+                <!-- Local reactive elements -->
+                <i class="fas fa-laptop-code absolute text-stone-200/40 text-6xl top-10 left-0 floating-tool" data-speed="1.5"></i>
+                <i class="fas fa-paint-brush absolute text-stone-200/30 text-5xl bottom-20 right-0 floating-tool" data-speed="-1.5"></i>
+                <i class="fas fa-code-branch absolute text-stone-200/40 text-7xl top-1/2 left-[-10%] floating-tool" data-speed="2.5"></i>
+                <i class="fas fa-terminal absolute text-stone-200/30 text-6xl top-1/3 right-[-5%] floating-tool" data-speed="-2"></i>
+                
+                <div class="text-center mb-12" data-aos="fade-down">
+                    <h2 class="text-3xl font-serif font-medium mb-3 text-bhat-ink">Creator <span class="italic text-stone-400">Wall</span></h2>
+                    <p class="text-stone-500 text-sm">Meet the architect behind the network.</p>
+                </div>
+
+                <div class="bg-white border border-stone-100 shadow-[0_8px_30px_rgba(0,0,0,0.03)] p-10 rounded-[2rem] text-center relative overflow-hidden" data-aos="fade-up">
+                    <div class="w-24 h-24 bg-stone-50 border border-stone-200 rounded-full mx-auto mb-5 flex items-center justify-center text-3xl text-bhat-ink shadow-inner">
+                        <i class="fas fa-user-ninja"></i>
+                    </div>
+                    <h3 class="text-3xl font-serif font-bold text-bhat-ink mb-2">BHAT BOYKA</h3>
+                    <p class="text-stone-400 text-xs uppercase tracking-widest font-semibold mb-8">Website Architect</p>
+                    
+                    <a href="https://youtube.com/@aathir_hussain_bhat.?si=XnvDwjGygCX3V6Cx" target="_blank" class="inline-flex items-center justify-center gap-2 bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 transition-colors px-6 py-3 rounded-full font-medium text-sm shadow-sm group">
+                        <i class="fab fa-youtube text-lg group-hover:scale-110 transition-transform"></i>
+                        Follow on YouTube
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="md:hidden fixed bottom-0 w-full bg-white/90 backdrop-blur-lg border-t border-stone-200 z-40 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
+        <div class="flex justify-around items-center h-16 px-2">
+            <button onclick="navigate('home')" class="nav-item active flex flex-col items-center justify-center w-full h-full text-stone-400 transition-colors" data-target="home">
+                <i class="fas fa-home text-[1.1rem] mb-1"></i>
+                <span class="text-[9px] font-semibold uppercase tracking-wider">Home</span>
+            </button>
+            <button onclick="navigate('explore')" class="nav-item flex flex-col items-center justify-center w-full h-full text-stone-400 transition-colors" data-target="explore">
+                <i class="fas fa-compass text-[1.1rem] mb-1"></i>
+                <span class="text-[9px] font-semibold uppercase tracking-wider">Explore</span>
+            </button>
+            <button onclick="navigate('add')" class="nav-item flex flex-col items-center justify-center w-full h-full text-stone-400 transition-colors" data-target="add">
+                <div class="w-11 h-11 rounded-full bg-bhat-ink text-white flex items-center justify-center -mt-6 shadow-md border-4 border-white">
+                    <i class="fas fa-plus text-sm"></i>
+                </div>
+                <span class="text-[9px] font-semibold uppercase tracking-wider mt-1">Add</span>
+            </button>
+            <button onclick="navigate('profile')" class="nav-item flex flex-col items-center justify-center w-full h-full text-stone-400 transition-colors" data-target="profile">
+                <i class="fas fa-user text-[1.1rem] mb-1"></i>
+                <span class="text-[9px] font-semibold uppercase tracking-wider">Profile</span>
+            </button>
+            <button onclick="navigate('creator')" class="nav-item flex flex-col items-center justify-center w-full h-full text-stone-400 transition-colors" data-target="creator">
+                <i class="fas fa-code text-[1.1rem] mb-1"></i>
+                <span class="text-[9px] font-semibold uppercase tracking-wider">Creator</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="fixed inset-0 z-50 flex items-center justify-center bg-bhat-ink/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white p-10 rounded-[2rem] max-w-sm w-full mx-6 text-center transform scale-95 transition-transform duration-300 shadow-2xl" id="editProfileContent">
+            <div class="w-16 h-16 bg-stone-50 text-stone-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-6 border border-stone-100">
+                <i class="fas fa-user-edit"></i>
+            </div>
+            <h3 class="text-2xl font-serif font-medium mb-4 text-bhat-ink">Edit Profile</h3>
+            <input type="text" id="editNameInput" onkeypress="if(event.key === 'Enter') saveProfileName()" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-bhat-ink text-sm focus:border-bhat-ink focus:ring-1 focus:ring-bhat-ink outline-none transition-all mb-8" placeholder="Enter your name">
+            <div class="flex gap-3">
+                <button onclick="closeEditProfileModal()" class="flex-1 bg-white border border-stone-200 text-stone-600 font-medium text-sm py-3.5 rounded-full hover:bg-stone-50 transition-colors shadow-sm">
+                    Cancel
+                </button>
+                <button onclick="saveProfileName()" class="flex-1 bg-bhat-ink text-white font-medium text-sm py-3.5 rounded-full hover:bg-stone-800 transition-colors shadow-md">
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 z-50 flex items-center justify-center bg-bhat-ink/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white p-10 rounded-[2rem] max-w-sm w-full mx-6 text-center transform scale-95 transition-transform duration-300 shadow-2xl" id="modalContent">
+            <div class="w-16 h-16 bg-green-50 text-green-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-6 border border-green-100">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3 class="text-2xl font-serif font-medium mb-2 text-bhat-ink">Success</h3>
+            <p class="text-stone-500 text-sm mb-8 font-light" id="modalMessage">Workshop registered successfully.</p>
+            <button onclick="closeModal()" class="w-full bg-bhat-ink text-white font-medium text-sm py-3.5 rounded-full hover:bg-stone-800 transition-colors shadow-md">
+                Continue
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        let currentUser = localStorage.getItem('bhat_user') || 'Guest User';
+        let followedWorkshops = JSON.parse(localStorage.getItem('bhat_followed')) || [];
+        
+        const workshopsDB = [
+            { id: 'aashaq-bike-point', name: 'Aashaq Bike Point', location: 'Villagam', phone: '099065 84655', services: ['Repair', 'Service', 'Parts'], rating: 5.0, image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=500&auto=format&fit=crop' },
+            { id: 'ws-2', name: 'Royal Enfield Masters', location: 'Srinagar', phone: '9876543210', services: ['Engine Rebuild', 'Customization'], rating: 4.8, image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=500&auto=format&fit=crop' },
+            { id: 'ws-3', name: 'Valley Auto Care', location: 'Anantnag', phone: '9876543211', services: ['Car Wash', 'Detailing', 'Oil Change'], rating: 4.5, image: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=500&auto=format&fit=crop' },
+            { id: 'ws-4', name: 'Speed Moto Tech', location: 'Baramulla', phone: '9876543212', services: ['Diagnostics', 'Electrical'], rating: 4.7, image: 'https://images.unsplash.com/photo-1625047509168-a71c6f959828?q=80&w=500&auto=format&fit=crop' },
+        ];
+
+        const userWorkshops = JSON.parse(localStorage.getItem('bhat_user_workshops')) || [];
+        const allWorkshops = [...workshopsDB, ...userWorkshops];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            AOS.init({
+                duration: 800,
+                once: true,
+                offset: 30
+            });
+
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+                
+                gsap.from(".hero-content > *", {
+                    y: 20,
+                    opacity: 0,
+                    duration: 1,
+                    stagger: 0.15,
+                    ease: "power2.out"
+                });
+            }, 800);
+
+            document.getElementById('profileNameDisplay').textContent = currentUser;
+            
+            renderWorkshops(allWorkshops);
+            renderFollowed();
+            updateFollowButtonState('aashaq-bike-point');
+
+            const counters = document.querySelectorAll('.counter');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = +entry.target.getAttribute('data-target');
+                        gsap.to(entry.target, {
+                            innerHTML: target,
+                            duration: 2,
+                            snap: { innerHTML: 1 },
+                            ease: "power1.inOut",
+                            onUpdate: function() {
+                                entry.target.innerHTML = Math.round(this.targets()[0].innerHTML) + (target > 1000 ? '+' : '');
+                            }
+                        });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            });
+            counters.forEach(c => observer.observe(c));
+
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const filtered = allWorkshops.filter(w => 
+                    w.name.toLowerCase().includes(term) || 
+                    w.location.toLowerCase().includes(term) ||
+                    w.services.some(s => s.toLowerCase().includes(term))
+                );
+                renderWorkshops(filtered);
+            });
+
+            document.getElementById('addWorkshopForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const newWorkshop = {
+                    id: 'user-ws-' + Date.now(),
+                    name: document.getElementById('wName').value,
+                    owner: document.getElementById('wOwner').value,
+                    phone: document.getElementById('wPhone').value,
+                    location: document.getElementById('wLocation').value,
+                    services: document.getElementById('wServices').value.split(',').map(s => s.trim()),
+                    rating: 5.0,
+                    image: 'https://images.unsplash.com/photo-1613214149922-f1809c99b414?q=80&w=500&auto=format&fit=crop'
+                };
+
+                userWorkshops.push(newWorkshop);
+                localStorage.setItem('bhat_user_workshops', JSON.stringify(userWorkshops));
+                allWorkshops.push(newWorkshop);
+                
+                e.target.reset();
+                showModal('Workshop registered successfully! It is now live on the network.');
+                renderWorkshops(allWorkshops);
+            });
+        });
+
+        function navigate(pageId) {
+            document.querySelectorAll('.page').forEach(p => {
+                p.classList.remove('active');
+                gsap.to(p, {opacity: 0, duration: 0.2});
+            });
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            const activeNavs = document.querySelectorAll(`.nav-item[data-target="${pageId}"]`);
+            activeNavs.forEach(n => n.classList.add('active'));
+
+            const target = document.getElementById(pageId);
+            target.classList.add('active');
+            gsap.fromTo(target, {opacity: 0, y: 10}, {opacity: 1, y: 0, duration: 0.4, ease: "power2.out"});
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            if(pageId === 'profile') renderFollowed();
+            if(pageId === 'explore') renderWorkshops(allWorkshops);
+        }
+
+        function renderWorkshops(workshops) {
+            const grid = document.getElementById('workshopsGrid');
+            grid.innerHTML = '';
+            
+            if(workshops.length === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center text-stone-400 py-10 text-sm">No workshops found.</div>';
+                return;
+            }
+
+            workshops.forEach((w, index) => {
+                const isFollowed = followedWorkshops.includes(w.id);
+                const card = document.createElement('div');
+                card.className = 'bg-white border border-stone-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] rounded-3xl overflow-hidden group';
+                card.setAttribute('data-aos', 'fade-up');
+                card.setAttribute('data-aos-delay', (index % 3) * 100);
+                
+                card.innerHTML = `
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="${w.image}" alt="${w.name}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 text-bhat-ink shadow-sm">
+                            <i class="fas fa-star text-amber-500"></i> ${w.rating}
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-serif font-medium mb-1 truncate text-bhat-ink">${w.name}</h3>
+                        <p class="text-stone-500 text-xs mb-5 flex items-center gap-1.5 font-medium"><i class="fas fa-map-marker-alt text-stone-300"></i> ${w.location}</p>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            ${w.services.slice(0,3).map(s => `<span class="text-[10px] font-medium uppercase tracking-wider bg-stone-50 border border-stone-100 px-2 py-1 rounded-md text-stone-500">${s}</span>`).join('')}
+                            ${w.services.length > 3 ? `<span class="text-[10px] font-medium uppercase tracking-wider bg-stone-50 border border-stone-100 px-2 py-1 rounded-md text-stone-500">+${w.services.length - 3}</span>` : ''}
+                        </div>
+                        <div class="flex gap-2">
+                            <a href="tel:${w.phone}" class="flex-1 bg-stone-50 hover:bg-stone-100 border border-stone-100 transition-colors text-center py-2.5 rounded-xl text-xs font-semibold text-bhat-ink">
+                                <i class="fas fa-phone text-stone-400 mr-1"></i> Call
+                            </a>
+                            <button onclick="toggleFollow('${w.id}')" id="btn-follow-${w.id}" class="w-11 h-11 rounded-xl flex items-center justify-center transition-colors border ${isFollowed ? 'bg-red-50 border-red-100 text-red-500' : 'bg-stone-50 border-stone-100 text-stone-400 hover:bg-stone-100'}">
+                                <i class="${isFollowed ? 'fas' : 'far'} fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleFollow(id) {
+            const index = followedWorkshops.indexOf(id);
+            if (index > -1) {
+                followedWorkshops.splice(index, 1);
+            } else {
+                followedWorkshops.push(id);
+                gsap.fromTo('#btn-follow-' + id, {scale: 1.15}, {scale: 1, duration: 0.3, ease: "back.out(1.7)"});
+            }
+            localStorage.setItem('bhat_followed', JSON.stringify(followedWorkshops));
+            
+            updateFollowButtonState(id);
+            if(document.getElementById('profile').classList.contains('active')) {
+                renderFollowed();
+            }
+            
+            if(document.getElementById('explore').classList.contains('active')) {
+                renderWorkshops(allWorkshops);
+            }
+        }
+
+        function updateFollowButtonState(id) {
+            const btn = document.getElementById('btn-follow-' + id);
+            if (!btn) return;
+            
+            const isFollowed = followedWorkshops.includes(id);
+            
+            if (id === 'aashaq-bike-point') {
+                if (isFollowed) {
+                    btn.innerHTML = '<i class="fas fa-heart"></i> <span>Saved</span>';
+                    btn.className = 'mt-6 w-full ripple bg-red-50 border border-red-100 text-red-500 transition-all p-4 rounded-2xl font-semibold flex items-center justify-center gap-2 text-sm';
+                } else {
+                    btn.innerHTML = '<i class="far fa-heart"></i> <span>Save Workshop</span>';
+                    btn.className = 'mt-6 w-full ripple bg-white border border-stone-200 text-bhat-ink hover:bg-stone-50 transition-all p-4 rounded-2xl font-semibold flex items-center justify-center gap-2 shadow-sm text-sm';
+                }
+            } else {
+                if (isFollowed) {
+                    btn.innerHTML = '<i class="fas fa-heart"></i>';
+                    btn.className = 'w-11 h-11 rounded-xl flex items-center justify-center transition-colors border bg-red-50 border-red-100 text-red-500';
+                } else {
+                    btn.innerHTML = '<i class="far fa-heart"></i>';
+                    btn.className = 'w-11 h-11 rounded-xl flex items-center justify-center transition-colors border bg-stone-50 border-stone-100 text-stone-400 hover:bg-stone-100';
+                }
+            }
+        }
+
+        function renderFollowed() {
+            const list = document.getElementById('followedList');
+            const emptyMsg = document.getElementById('emptyFollowed');
+            
+            Array.from(list.children).forEach(child => {
+                if(child.id !== 'emptyFollowed') child.remove();
+            });
+
+            if (followedWorkshops.length === 0) {
+                emptyMsg.style.display = 'block';
+                return;
+            }
+
+            emptyMsg.style.display = 'none';
+            
+            followedWorkshops.forEach(id => {
+                const workshop = allWorkshops.find(w => w.id === id);
+                if (!workshop) return;
+
+                const item = document.createElement('div');
+                item.className = 'bg-white border border-stone-100 shadow-sm p-3 rounded-2xl flex items-center gap-4';
+                item.innerHTML = `
+                    <img src="${workshop.image}" class="w-14 h-14 rounded-xl object-cover">
+                    <div class="flex-1">
+                        <h4 class="font-serif font-medium text-bhat-ink">${workshop.name}</h4>
+                        <p class="text-xs text-stone-500 font-medium"><i class="fas fa-map-marker-alt text-stone-300 mr-1"></i>${workshop.location}</p>
+                    </div>
+                    <div class="flex gap-2 pr-2">
+                        <a href="tel:${workshop.phone}" class="w-9 h-9 rounded-full bg-stone-50 border border-stone-100 flex items-center justify-center hover:bg-stone-100 text-stone-500 transition-colors">
+                            <i class="fas fa-phone text-xs"></i>
+                        </a>
+                        <button onclick="toggleFollow('${workshop.id}')" class="w-9 h-9 rounded-full bg-red-50 border border-red-100 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function editProfileName() {
+            const modal = document.getElementById('editProfileModal');
+            const content = document.getElementById('editProfileContent');
+            const input = document.getElementById('editNameInput');
+            
+            input.value = currentUser;
+            
+            modal.classList.remove('hidden');
+            void modal.offsetWidth; // Trigger reflow
+            
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+            content.classList.add('scale-100');
+            
+            setTimeout(() => input.focus(), 300);
+        }
+
+        function closeEditProfileModal() {
+            const modal = document.getElementById('editProfileModal');
+            const content = document.getElementById('editProfileContent');
+            
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function saveProfileName() {
+            const input = document.getElementById('editNameInput');
+            const newName = input.value;
+            if (newName && newName.trim() !== "") {
+                currentUser = newName.trim();
+                localStorage.setItem('bhat_user', currentUser);
+                document.getElementById('profileNameDisplay').textContent = currentUser;
+                closeEditProfileModal();
+            }
+        }
+
+        function showModal(msg) {
+            document.getElementById('modalMessage').textContent = msg;
+            const modal = document.getElementById('successModal');
+            const content = document.getElementById('modalContent');
+            
+            modal.classList.remove('hidden');
+            // Trigger reflow
+            void modal.offsetWidth;
+            
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+            content.classList.add('scale-100');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('successModal');
+            const content = document.getElementById('modalContent');
+            
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Continuous floating animation for background tools
+        gsap.utils.toArray('.floating-tool').forEach(tool => {
+            gsap.to(tool, {
+                rotation: "+=15",
+                scale: 1.05,
+                duration: "random(3, 5)",
+                yoyo: true,
+                repeat: -1,
+                ease: "sine.inOut",
+                delay: "random(0, 2)"
+            });
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            // Home parallax background
+            if(document.getElementById('home').classList.contains('active')) {
+                const x = (window.innerWidth - e.pageX * 2) / 100;
+                const y = (window.innerHeight - e.pageY * 2) / 100;
+                gsap.to('.parallax-bg', {
+                    x: x,
+                    y: y,
+                    duration: 1,
+                    ease: "power1.out"
+                });
+            }
+
+            // Reactive floating tools parallax
+            const mouseX = (e.clientX / window.innerWidth - 0.5);
+            const mouseY = (e.clientY / window.innerHeight - 0.5);
+            
+            gsap.utils.toArray('.floating-tool').forEach(tool => {
+                const speed = parseFloat(tool.getAttribute('data-speed'));
+                gsap.to(tool, {
+                    x: mouseX * 80 * speed,
+                    y: mouseY * 80 * speed,
+                    duration: 2,
+                    ease: "power2.out",
+                    overwrite: "auto"
+                });
+            });
+        });
+    </script>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/" target="_blank" class="fixed bottom-24 md:bottom-8 right-6 z-50 w-14 h-14 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-full flex items-center justify-center text-3xl shadow-lg transition-colors whatsapp-float">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+</body>
+                                  </html>
