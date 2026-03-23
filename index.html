@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -15,7 +16,11 @@
                             ink: '#1A1A1A',
                             surface: '#FFFFFF',
                             accent: '#C25E2A',
-                            muted: '#8C8C85'
+                            muted: '#8C8C85',
+                            darkBg: '#121212',
+                            darkSurface: '#1E1E1E',
+                            darkInk: '#E0E0E0',
+                            darkAccent: '#00FFCC'
                         }
                     },
                     fontFamily: {
@@ -35,6 +40,11 @@
             color: #1A1A1A;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .dark body {
+            background-color: #121212;
+            color: #E0E0E0;
         }
         
         ::-webkit-scrollbar {
@@ -43,12 +53,21 @@
         ::-webkit-scrollbar-track {
             background: #F9F9F7;
         }
+        .dark ::-webkit-scrollbar-track {
+            background: #121212;
+        }
         ::-webkit-scrollbar-thumb {
             background: #D6D6D6;
             border-radius: 10px;
         }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #333;
+        }
         ::-webkit-scrollbar-thumb:hover {
             background: #A3A3A3;
+        }
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #555;
         }
 
         .page {
@@ -103,8 +122,23 @@
             70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
             100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
         }
+        @keyframes sos-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
         .whatsapp-float {
             animation: whatsapp-pulse 2s infinite;
+        }
+        .sos-float {
+            animation: sos-pulse 2s infinite;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
@@ -131,15 +165,30 @@
     </div>
 
     <!-- Header -->
-    <header class="fixed top-0 w-full z-40 bg-white/80 backdrop-blur-md border-b border-stone-200/60">
+    <header class="fixed top-0 w-full z-40 bg-white/80 dark:bg-[#121212]/80 backdrop-blur-md border-b border-stone-200/60 dark:border-stone-800/60 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-            <div class="text-lg font-serif font-bold text-bhat-ink tracking-widest uppercase">Bhat <span class="text-stone-400 font-normal">Network</span></div>
-            <div class="hidden md:flex space-x-8 text-sm font-medium text-stone-500">
-                <button onclick="navigate('home')" class="hover:text-bhat-ink transition-colors">Home</button>
-                <button onclick="navigate('explore')" class="hover:text-bhat-ink transition-colors">Explore</button>
-                <button onclick="navigate('add')" class="hover:text-bhat-ink transition-colors">Add Workshop</button>
-                <button onclick="navigate('profile')" class="hover:text-bhat-ink transition-colors">Profile</button>
-                <button onclick="navigate('creator')" class="hover:text-bhat-ink transition-colors">Creator</button>
+            <div class="text-lg font-serif font-bold text-bhat-ink dark:text-bhat-darkInk tracking-widest uppercase">Bhat <span class="text-stone-400 dark:text-stone-500 font-normal">Network</span></div>
+            <div class="hidden md:flex items-center space-x-8 text-sm font-medium text-stone-500 dark:text-stone-400">
+                <button onclick="navigate('home')" class="hover:text-bhat-ink dark:hover:text-bhat-darkAccent transition-colors">Home</button>
+                <button onclick="navigate('explore')" class="hover:text-bhat-ink dark:hover:text-bhat-darkAccent transition-colors">Explore</button>
+                <button onclick="navigate('add')" class="hover:text-bhat-ink dark:hover:text-bhat-darkAccent transition-colors">Add Workshop</button>
+                <button onclick="navigate('profile')" class="hover:text-bhat-ink dark:hover:text-bhat-darkAccent transition-colors">Profile</button>
+                <button onclick="navigate('dashboard')" class="hover:text-bhat-ink dark:hover:text-bhat-darkAccent transition-colors">Dashboard</button>
+                <button onclick="navigate('creator')" class="hover:text-bhat-ink dark:hover:text-bhat-darkAccent transition-colors">Creator</button>
+                <button onclick="toggleDarkMode()" class="text-lg hover:text-bhat-ink dark:hover:text-bhat-darkAccent transition-colors ml-4" id="darkModeToggleBtn">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button onclick="triggerSOS()" id="sos-desktop-btn" class="text-red-500 hover:text-red-600 transition-colors ml-2 sos-float rounded-full w-8 h-8 flex items-center justify-center bg-red-50 dark:bg-red-900/30" title="Emergency SOS">
+                    <i class="fas fa-exclamation-triangle text-sm"></i>
+                </button>
+            </div>
+            <div class="md:hidden flex items-center gap-3">
+                <button onclick="triggerSOS()" id="sos-mobile-btn" class="text-red-500 hover:text-red-600 transition-colors sos-float rounded-full w-8 h-8 flex items-center justify-center bg-red-50 dark:bg-red-900/30" title="Emergency SOS">
+                    <i class="fas fa-exclamation-triangle text-sm"></i>
+                </button>
+                <button onclick="toggleDarkMode()" class="text-lg text-stone-500 dark:text-stone-400 hover:text-bhat-ink dark:hover:text-bhat-darkAccent transition-colors" id="darkModeToggleBtnMobile">
+                    <i class="fas fa-moon"></i>
+                </button>
             </div>
         </div>
     </header>
@@ -195,7 +244,7 @@
             </div>
 
             <!-- Featured Workshop -->
-            <div class="max-w-7xl mx-auto px-6 py-16">
+            <div id="featured-section" class="max-w-7xl mx-auto px-6 py-16">
                 <div class="flex items-center justify-between mb-10">
                     <h2 class="text-3xl font-serif font-medium text-bhat-ink">Featured <span class="italic text-stone-400">Workshop</span></h2>
                     <div class="h-[1px] flex-1 bg-stone-200 ml-6"></div>
@@ -203,60 +252,72 @@
 
                 <div class="bg-white border border-stone-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] rounded-[2rem] overflow-hidden relative group" data-aos="fade-up">
                     <div class="grid md:grid-cols-2 gap-0">
-                        <div class="relative h-72 md:h-full overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=1000&auto=format&fit=crop" alt="Aashaq Bike Point" class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000">
-                            <div class="absolute top-6 left-6 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold text-bhat-ink tracking-wider uppercase flex items-center gap-2 shadow-sm">
+                        <div class="relative h-72 md:h-full overflow-hidden flex flex-col">
+                            <img id="featured-image" src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=1000&auto=format&fit=crop" alt="Aashaq Bike Point" class="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000">
+                            <div class="absolute top-6 left-6 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold text-bhat-ink tracking-wider uppercase flex items-center gap-2 shadow-sm z-10">
                                 <i class="fas fa-star text-amber-500"></i> Editor's Choice
+                            </div>
+                            <div id="featured-gallery" class="absolute bottom-6 left-6 right-6 flex gap-2 overflow-x-auto pb-2 z-10 hide-scrollbar">
+                                <!-- Gallery images will be injected here -->
                             </div>
                         </div>
                         <div class="flex flex-col justify-center p-8 md:p-12">
-                            <h3 class="text-4xl font-serif font-medium mb-3 text-bhat-ink">Aashaq Bike Point</h3>
-                            <p class="text-stone-500 text-sm mb-8 flex items-center gap-2 font-medium">
-                                <i class="fas fa-map-marker-alt text-stone-300"></i> Villagam, Kashmir
+                            <h3 id="featured-name" class="text-4xl font-serif font-medium mb-3 text-bhat-ink dark:text-bhat-darkInk">Aashaq Bike Point</h3>
+                            <div id="featured-status" class="text-xs font-bold uppercase tracking-wider mb-4"></div>
+                            <p class="text-stone-500 dark:text-stone-400 text-sm mb-4 flex items-center gap-2 font-medium">
+                                <i class="fas fa-map-marker-alt text-stone-300"></i> <span id="featured-location">Villagam, Kashmir</span>
                             </p>
                             
+                            <div id="featured-services" class="flex flex-wrap gap-2 mb-8">
+                                <!-- Services will be injected here -->
+                            </div>
+                            
                             <div class="space-y-3 mb-10">
-                                <div class="flex items-center gap-4 bg-stone-50 border border-stone-100 p-4 rounded-2xl">
-                                    <div class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-stone-600">
+                                <div class="flex items-center gap-4 bg-stone-50 dark:bg-[#121212] border border-stone-100 dark:border-stone-800 p-4 rounded-2xl">
+                                    <div class="w-10 h-10 rounded-full bg-white dark:bg-stone-800 shadow-sm flex items-center justify-center text-stone-600 dark:text-stone-300">
                                         <i class="fas fa-phone-alt text-sm"></i>
                                     </div>
                                     <div>
                                         <div class="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">Contact</div>
-                                        <div class="font-medium text-bhat-ink text-sm">099065 84655</div>
+                                        <div id="featured-phone" class="font-medium text-bhat-ink dark:text-bhat-darkInk text-sm">9906584655</div>
                                     </div>
                                 </div>
-                                <div class="flex items-center gap-4 bg-stone-50 border border-stone-100 p-4 rounded-2xl">
-                                    <div class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-stone-600">
+                                <div class="flex items-center gap-4 bg-stone-50 dark:bg-[#121212] border border-stone-100 dark:border-stone-800 p-4 rounded-2xl">
+                                    <div class="w-10 h-10 rounded-full bg-white dark:bg-stone-800 shadow-sm flex items-center justify-center text-stone-600 dark:text-stone-300">
                                         <i class="fas fa-clock text-sm"></i>
                                     </div>
                                     <div>
                                         <div class="text-[10px] text-stone-400 uppercase tracking-wider font-semibold">Timings</div>
-                                        <div class="font-medium text-bhat-ink text-sm">10 AM – 10 PM <span class="text-red-400 text-xs ml-1 font-normal">(Closed Friday)</span></div>
+                                        <div class="font-medium text-bhat-ink dark:text-bhat-darkInk text-sm">10 AM – 10 PM <span class="text-red-400 text-xs ml-1 font-normal">(Closed Friday)</span></div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                                <a href="tel:+919906584655" class="ripple bg-white border border-stone-200 hover:bg-stone-50 transition-all p-3 rounded-2xl flex flex-col items-center justify-center gap-2 text-xs font-semibold text-bhat-ink group/btn shadow-sm">
-                                    <i class="fas fa-phone text-stone-400 group-hover/btn:text-bhat-ink transition-colors"></i>
+                                <a id="featured-link-call" href="tel:+919906584655" class="ripple bg-white dark:bg-bhat-darkSurface border border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 transition-all p-3 rounded-2xl flex flex-col items-center justify-center gap-2 text-xs font-semibold text-bhat-ink dark:text-bhat-darkInk group/btn shadow-sm">
+                                    <i class="fas fa-phone text-stone-400 group-hover/btn:text-bhat-ink dark:group-hover/btn:text-white transition-colors"></i>
                                     Call
                                 </a>
-                                <a href="https://g.co/kgs/jH8xfRi" target="_blank" class="ripple bg-white border border-stone-200 hover:bg-stone-50 transition-all p-3 rounded-2xl flex flex-col items-center justify-center gap-2 text-xs font-semibold text-bhat-ink group/btn shadow-sm">
+                                <a id="featured-link-whatsapp" href="https://wa.me/919906584655?text=Hi,%20I%20found%20your%20workshop%20on%20Bhat%20Network.%20I%20need%20help%20with%20my%20bike..." target="_blank" class="ripple bg-white dark:bg-bhat-darkSurface border border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 transition-all p-3 rounded-2xl flex flex-col items-center justify-center gap-2 text-xs font-semibold text-bhat-ink dark:text-bhat-darkInk group/btn shadow-sm">
+                                    <i class="fab fa-whatsapp text-stone-400 group-hover/btn:text-green-500 transition-colors"></i>
+                                    WhatsApp
+                                </a>
+                                <a id="featured-link-directions" href="https://g.co/kgs/jH8xfRi" target="_blank" class="ripple bg-white dark:bg-bhat-darkSurface border border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 transition-all p-3 rounded-2xl flex flex-col items-center justify-center gap-2 text-xs font-semibold text-bhat-ink dark:text-bhat-darkInk group/btn shadow-sm">
                                     <i class="fas fa-directions text-stone-400 group-hover/btn:text-blue-500 transition-colors"></i>
                                     Directions
                                 </a>
-                                <a href="https://youtube.com/@aashaqbikepoint?si=XMJbbCSTaWaL7yU8" target="_blank" class="ripple bg-white border border-stone-200 hover:bg-stone-50 transition-all p-3 rounded-2xl flex flex-col items-center justify-center gap-2 text-xs font-semibold text-bhat-ink group/btn shadow-sm">
+                                <a id="featured-link-youtube" href="https://youtube.com/@aashaqbikepoint?si=XMJbbCSTaWaL7yU8" target="_blank" class="ripple bg-white dark:bg-bhat-darkSurface border border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 transition-all p-3 rounded-2xl flex flex-col items-center justify-center gap-2 text-xs font-semibold text-bhat-ink dark:text-bhat-darkInk group/btn shadow-sm">
                                     <i class="fab fa-youtube text-stone-400 group-hover/btn:text-red-500 transition-colors"></i>
                                     YouTube
                                 </a>
-                                <a href="https://www.instagram.com/aashaq_bike_point_villagam" target="_blank" class="ripple bg-white border border-stone-200 hover:bg-stone-50 transition-all p-3 rounded-2xl flex flex-col items-center justify-center gap-2 text-xs font-semibold text-bhat-ink group/btn shadow-sm">
+                                <a id="featured-link-instagram" href="https://www.instagram.com/aashaq_bike_point_villagam" target="_blank" class="ripple bg-white dark:bg-bhat-darkSurface border border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800 transition-all p-3 rounded-2xl flex flex-col items-center justify-center gap-2 text-xs font-semibold text-bhat-ink dark:text-bhat-darkInk group/btn shadow-sm">
                                     <i class="fab fa-instagram text-stone-400 group-hover/btn:text-pink-500 transition-colors"></i>
                                     Instagram
                                 </a>
                             </div>
                             
                             <button onclick="toggleFollow('aashaq-bike-point')" id="btn-follow-aashaq-bike-point" class="mt-6 w-full ripple bg-white border border-stone-200 text-bhat-ink hover:bg-stone-50 transition-all p-4 rounded-2xl font-semibold flex items-center justify-center gap-2 shadow-sm text-sm">
-                                <i class="far fa-heart"></i> <span id="follow-text-aashaq-bike-point">Follow Workshop</span>
+                                <i class="far fa-heart"></i> <span id="follow-text-aashaq-bike-point">Save to Garage</span>
                             </button>
                         </div>
                     </div>
@@ -328,8 +389,15 @@
             <div class="max-w-2xl mx-auto px-6 py-12">
                 <div class="bg-white border border-stone-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] p-10 rounded-[2rem] mb-10 text-center relative overflow-hidden" data-aos="fade-down">
                     <div class="relative z-10">
-                        <div class="w-24 h-24 bg-stone-50 border border-stone-200 rounded-full mx-auto mb-5 flex items-center justify-center text-3xl text-stone-300">
-                            <i class="fas fa-user"></i>
+                        <div class="relative w-24 h-24 mx-auto mb-5 group cursor-pointer" onclick="document.getElementById('profilePhotoInput').click()">
+                            <div id="profilePhotoContainer" class="w-full h-full bg-stone-50 border border-stone-200 rounded-full flex items-center justify-center text-3xl text-stone-300 overflow-hidden">
+                                <i class="fas fa-user" id="profileIcon"></i>
+                                <img id="profileImage" src="" class="w-full h-full object-cover hidden">
+                            </div>
+                            <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i class="fas fa-camera text-white"></i>
+                            </div>
+                            <input type="file" id="profilePhotoInput" class="hidden" accept="image/*" onchange="handleProfilePhotoUpload(event)">
                         </div>
                         <div class="flex items-center justify-center gap-3 mb-2">
                             <h2 class="text-3xl font-serif font-medium text-bhat-ink" id="profileNameDisplay">Guest User</h2>
@@ -340,13 +408,39 @@
                 </div>
 
                 <h3 class="text-lg font-serif font-medium mb-6 flex items-center gap-2 text-bhat-ink" data-aos="fade-right">
-                    <i class="fas fa-bookmark text-stone-300 text-sm"></i> Saved Workshops
+                    <i class="fas fa-bookmark text-stone-300 text-sm"></i> My Garage (Saved Workshops)
                 </h3>
                 
                 <div id="followedList" class="space-y-3" data-aos="fade-up">
                     <div class="text-center text-stone-400 py-10 text-sm bg-white border border-stone-100 border-dashed rounded-3xl" id="emptyFollowed">
-                        You haven't saved any workshops yet.
+                        You haven't saved any workshops to your garage yet.
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Page -->
+        <section id="dashboard" class="page">
+            <div class="max-w-4xl mx-auto px-6 py-12">
+                <div class="text-center mb-12" data-aos="fade-down">
+                    <h2 class="text-3xl font-serif font-medium mb-3 text-bhat-ink dark:text-bhat-darkInk">Mechanic <span class="italic text-stone-400 dark:text-bhat-darkAccent">Dashboard</span></h2>
+                    <p class="text-stone-500 dark:text-stone-400 text-sm">Manage your workshops, appointments, and status.</p>
+                </div>
+
+                <div id="dashboardLogin" class="bg-white dark:bg-bhat-darkSurface border border-stone-100 dark:border-stone-800 shadow-[0_8px_30px_rgba(0,0,0,0.03)] p-8 md:p-10 rounded-[2rem] max-w-md mx-auto text-center" data-aos="fade-up">
+                    <div class="w-16 h-16 bg-stone-50 dark:bg-stone-800 text-stone-500 dark:text-stone-400 rounded-full flex items-center justify-center text-2xl mx-auto mb-6 border border-stone-100 dark:border-stone-700">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3 class="text-xl font-serif font-medium mb-4 text-bhat-ink dark:text-bhat-darkInk">Owner Login</h3>
+                    <p class="text-sm text-stone-500 dark:text-stone-400 mb-6">Enter your phone number to access your dashboard.</p>
+                    <input type="tel" id="mechanicPhoneInput" class="w-full bg-stone-50 dark:bg-[#121212] border border-stone-200 dark:border-stone-700 rounded-2xl p-3.5 text-bhat-ink dark:text-bhat-darkInk text-sm focus:border-bhat-ink dark:focus:border-bhat-darkAccent focus:ring-1 focus:ring-bhat-ink dark:focus:ring-bhat-darkAccent outline-none transition-all mb-6" placeholder="e.g. 9906x xxxxx">
+                    <button onclick="loginMechanic()" class="w-full ripple btn-dark bg-bhat-ink dark:bg-bhat-darkAccent text-white dark:text-bhat-ink font-medium text-sm p-4 rounded-2xl hover:bg-stone-800 dark:hover:bg-[#00e6b8] transition-all shadow-md">
+                        Login
+                    </button>
+                </div>
+
+                <div id="dashboardContent" class="hidden space-y-8" data-aos="fade-up">
+                    <!-- Dashboard content injected via JS -->
                 </div>
             </div>
         </section>
@@ -361,67 +455,85 @@
                 <i class="fas fa-terminal absolute text-stone-200/30 text-6xl top-1/3 right-[-5%] floating-tool" data-speed="-2"></i>
                 
                 <div class="text-center mb-12" data-aos="fade-down">
-                    <h2 class="text-3xl font-serif font-medium mb-3 text-bhat-ink">Creator <span class="italic text-stone-400">Wall</span></h2>
-                    <p class="text-stone-500 text-sm">Meet the architect behind the network.</p>
+                    <h2 class="text-3xl font-serif font-medium mb-3 text-bhat-ink dark:text-bhat-darkInk">Creator <span class="italic text-stone-400">Wall</span></h2>
+                    <p class="text-stone-500 dark:text-stone-400 text-sm">Meet the architect behind the network.</p>
                 </div>
 
-                <div class="bg-white border border-stone-100 shadow-[0_8px_30px_rgba(0,0,0,0.03)] p-10 rounded-[2rem] text-center relative overflow-hidden" data-aos="fade-up">
-                    <div class="w-24 h-24 bg-stone-50 border border-stone-200 rounded-full mx-auto mb-5 flex items-center justify-center text-3xl text-bhat-ink shadow-inner">
+                <div class="bg-white dark:bg-bhat-darkSurface border border-stone-100 dark:border-stone-800 shadow-[0_8px_30px_rgba(0,0,0,0.03)] p-10 rounded-[2rem] text-center relative overflow-hidden" data-aos="fade-up">
+                    <div class="w-24 h-24 bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 rounded-full mx-auto mb-5 flex items-center justify-center text-3xl text-bhat-ink dark:text-bhat-darkInk shadow-inner">
                         <i class="fas fa-user-ninja"></i>
                     </div>
-                    <h3 class="text-3xl font-serif font-bold text-bhat-ink mb-2">BHAT BOYKA</h3>
+                    <h3 class="text-3xl font-serif font-bold text-bhat-ink dark:text-bhat-darkInk mb-2">BHAT BOYKA</h3>
                     <p class="text-stone-400 text-xs uppercase tracking-widest font-semibold mb-8">Website Architect</p>
                     
-                    <a href="https://youtube.com/@aathir_hussain_bhat.?si=XnvDwjGygCX3V6Cx" target="_blank" class="inline-flex items-center justify-center gap-2 bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 transition-colors px-6 py-3 rounded-full font-medium text-sm shadow-sm group">
-                        <i class="fab fa-youtube text-lg group-hover:scale-110 transition-transform"></i>
-                        Follow on YouTube
-                    </a>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <a href="https://youtube.com/@aathir_hussain_bhat" target="_blank" class="inline-flex items-center justify-center gap-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-900/50 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors px-6 py-3 rounded-full font-medium text-sm shadow-sm group">
+                            <i class="fab fa-youtube text-lg group-hover:scale-110 transition-transform"></i>
+                            YouTube
+                        </a>
+                        <a href="https://share.google/05cqDTY08eQEp74MH" target="_blank" class="inline-flex items-center justify-center gap-2 bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400 border border-pink-100 dark:border-pink-900/50 hover:bg-pink-100 dark:hover:bg-pink-900/40 transition-colors px-6 py-3 rounded-full font-medium text-sm shadow-sm group">
+                            <i class="fab fa-instagram text-lg group-hover:scale-110 transition-transform"></i>
+                            Instagram
+                        </a>
+                        <a href="https://share.google/jWLCjCdUvzcd360cx" target="_blank" class="inline-flex items-center justify-center gap-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/50 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors px-6 py-3 rounded-full font-medium text-sm shadow-sm group">
+                            <i class="fab fa-facebook text-lg group-hover:scale-110 transition-transform"></i>
+                            Facebook
+                        </a>
+                        <a href="https://github.com/Aathir-Hussain-Bhat" target="_blank" class="inline-flex items-center justify-center gap-2 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors px-6 py-3 rounded-full font-medium text-sm shadow-sm group">
+                            <i class="fab fa-github text-lg group-hover:scale-110 transition-transform"></i>
+                            GitHub
+                        </a>
+                        <a href="https://x.com/bhatboyka" target="_blank" class="inline-flex items-center justify-center gap-2 bg-sky-50 dark:bg-sky-900/20 text-sky-600 dark:text-sky-400 border border-sky-100 dark:border-sky-900/50 hover:bg-sky-100 dark:hover:bg-sky-900/40 transition-colors px-6 py-3 rounded-full font-medium text-sm shadow-sm group">
+                            <i class="fab fa-twitter text-lg group-hover:scale-110 transition-transform"></i>
+                            X (Twitter)
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
 
     <!-- Bottom Navigation (Mobile) -->
-    <nav class="md:hidden fixed bottom-0 w-full bg-white/90 backdrop-blur-lg border-t border-stone-200 z-40 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.02)]">
-        <div class="flex justify-around items-center h-16 px-2">
-            <button onclick="navigate('home')" class="nav-item active flex flex-col items-center justify-center w-full h-full text-stone-400 transition-colors" data-target="home">
+    <nav class="md:hidden fixed bottom-0 w-full bg-white/90 dark:bg-[#121212]/90 backdrop-blur-lg border-t border-stone-200 dark:border-stone-800 z-40 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.02)] transition-colors duration-300">
+        <div class="flex justify-between items-center h-16 px-2">
+            <button onclick="navigate('home')" class="nav-item active flex flex-col items-center justify-center flex-1 h-full text-stone-400 dark:text-stone-500 transition-colors" data-target="home">
                 <i class="fas fa-home text-[1.1rem] mb-1"></i>
                 <span class="text-[9px] font-semibold uppercase tracking-wider">Home</span>
             </button>
-            <button onclick="navigate('explore')" class="nav-item flex flex-col items-center justify-center w-full h-full text-stone-400 transition-colors" data-target="explore">
+            <button onclick="navigate('explore')" class="nav-item flex flex-col items-center justify-center flex-1 h-full text-stone-400 dark:text-stone-500 transition-colors" data-target="explore">
                 <i class="fas fa-compass text-[1.1rem] mb-1"></i>
                 <span class="text-[9px] font-semibold uppercase tracking-wider">Explore</span>
             </button>
-            <button onclick="navigate('add')" class="nav-item flex flex-col items-center justify-center w-full h-full text-stone-400 transition-colors" data-target="add">
-                <div class="w-11 h-11 rounded-full bg-bhat-ink text-white flex items-center justify-center -mt-6 shadow-md border-4 border-white">
-                    <i class="fas fa-plus text-sm"></i>
-                </div>
-                <span class="text-[9px] font-semibold uppercase tracking-wider mt-1">Add</span>
+            <button onclick="navigate('add')" class="nav-item flex flex-col items-center justify-center flex-1 h-full text-stone-400 dark:text-stone-500 transition-colors" data-target="add">
+                <i class="fas fa-plus text-[1.1rem] mb-1"></i>
+                <span class="text-[9px] font-semibold uppercase tracking-wider">Add</span>
             </button>
-            <button onclick="navigate('profile')" class="nav-item flex flex-col items-center justify-center w-full h-full text-stone-400 transition-colors" data-target="profile">
+            <button onclick="navigate('dashboard')" class="nav-item flex flex-col items-center justify-center flex-1 h-full text-stone-400 dark:text-stone-500 transition-colors" data-target="dashboard">
+                <i class="fas fa-tachometer-alt text-[1.1rem] mb-1"></i>
+                <span class="text-[9px] font-semibold uppercase tracking-wider">Dash</span>
+            </button>
+            <button onclick="navigate('profile')" class="nav-item flex flex-col items-center justify-center flex-1 h-full text-stone-400 dark:text-stone-500 transition-colors" data-target="profile">
                 <i class="fas fa-user text-[1.1rem] mb-1"></i>
                 <span class="text-[9px] font-semibold uppercase tracking-wider">Profile</span>
             </button>
-            <button onclick="navigate('creator')" class="nav-item flex flex-col items-center justify-center w-full h-full text-stone-400 transition-colors" data-target="creator">
+            <button onclick="navigate('creator')" class="nav-item flex flex-col items-center justify-center flex-1 h-full text-stone-400 dark:text-stone-500 transition-colors" data-target="creator">
                 <i class="fas fa-code text-[1.1rem] mb-1"></i>
                 <span class="text-[9px] font-semibold uppercase tracking-wider">Creator</span>
             </button>
         </div>
-    </nav>
-
-    <!-- Edit Profile Modal -->
-    <div id="editProfileModal" class="fixed inset-0 z-50 flex items-center justify-center bg-bhat-ink/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white p-10 rounded-[2rem] max-w-sm w-full mx-6 text-center transform scale-95 transition-transform duration-300 shadow-2xl" id="editProfileContent">
-            <div class="w-16 h-16 bg-stone-50 text-stone-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-6 border border-stone-100">
+    </nav><!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="fixed inset-0 z-50 flex items-center justify-center bg-bhat-ink/40 dark:bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-bhat-darkSurface p-10 rounded-[2rem] max-w-sm w-full mx-6 text-center transform scale-95 transition-transform duration-300 shadow-2xl" id="editProfileContent">
+            <div class="w-16 h-16 bg-stone-50 dark:bg-stone-800 text-stone-500 dark:text-stone-400 rounded-full flex items-center justify-center text-2xl mx-auto mb-6 border border-stone-100 dark:border-stone-700">
                 <i class="fas fa-user-edit"></i>
             </div>
-            <h3 class="text-2xl font-serif font-medium mb-4 text-bhat-ink">Edit Profile</h3>
-            <input type="text" id="editNameInput" onkeypress="if(event.key === 'Enter') saveProfileName()" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-3.5 text-bhat-ink text-sm focus:border-bhat-ink focus:ring-1 focus:ring-bhat-ink outline-none transition-all mb-8" placeholder="Enter your name">
+            <h3 class="text-2xl font-serif font-medium mb-4 text-bhat-ink dark:text-bhat-darkInk">Edit Profile</h3>
+            <input type="text" id="editNameInput" onkeypress="if(event.key === 'Enter') saveProfileName()" class="w-full bg-stone-50 dark:bg-[#121212] border border-stone-200 dark:border-stone-700 rounded-2xl p-3.5 text-bhat-ink dark:text-bhat-darkInk text-sm focus:border-bhat-ink dark:focus:border-bhat-darkAccent focus:ring-1 focus:ring-bhat-ink dark:focus:ring-bhat-darkAccent outline-none transition-all mb-8" placeholder="Enter your name">
             <div class="flex gap-3">
-                <button onclick="closeEditProfileModal()" class="flex-1 bg-white border border-stone-200 text-stone-600 font-medium text-sm py-3.5 rounded-full hover:bg-stone-50 transition-colors shadow-sm">
+                <button onclick="closeEditProfileModal()" class="flex-1 bg-white dark:bg-bhat-darkSurface border border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-400 font-medium text-sm py-3.5 rounded-full hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors shadow-sm">
                     Cancel
                 </button>
-                <button onclick="saveProfileName()" class="flex-1 bg-bhat-ink text-white font-medium text-sm py-3.5 rounded-full hover:bg-stone-800 transition-colors shadow-md">
+                <button onclick="saveProfileName()" class="flex-1 bg-bhat-ink dark:bg-bhat-darkAccent text-white dark:text-bhat-ink font-medium text-sm py-3.5 rounded-full hover:bg-stone-800 dark:hover:bg-[#00e6b8] transition-colors shadow-md">
                     Save
                 </button>
             </div>
@@ -429,16 +541,154 @@
     </div>
 
     <!-- Success Modal -->
-    <div id="successModal" class="fixed inset-0 z-50 flex items-center justify-center bg-bhat-ink/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
-        <div class="bg-white p-10 rounded-[2rem] max-w-sm w-full mx-6 text-center transform scale-95 transition-transform duration-300 shadow-2xl" id="modalContent">
-            <div class="w-16 h-16 bg-green-50 text-green-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-6 border border-green-100">
+    <div id="successModal" class="fixed inset-0 z-50 flex items-center justify-center bg-bhat-ink/40 dark:bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-bhat-darkSurface p-10 rounded-[2rem] max-w-sm w-full mx-6 text-center transform scale-95 transition-transform duration-300 shadow-2xl" id="modalContent">
+            <div class="w-16 h-16 bg-green-50 dark:bg-green-900/30 text-green-500 dark:text-green-400 rounded-full flex items-center justify-center text-2xl mx-auto mb-6 border border-green-100 dark:border-green-800">
                 <i class="fas fa-check"></i>
             </div>
-            <h3 class="text-2xl font-serif font-medium mb-2 text-bhat-ink">Success</h3>
-            <p class="text-stone-500 text-sm mb-8 font-light" id="modalMessage">Workshop registered successfully.</p>
-            <button onclick="closeModal()" class="w-full bg-bhat-ink text-white font-medium text-sm py-3.5 rounded-full hover:bg-stone-800 transition-colors shadow-md">
+            <h3 class="text-2xl font-serif font-medium mb-2 text-bhat-ink dark:text-bhat-darkInk">Success</h3>
+            <p class="text-stone-500 dark:text-stone-400 text-sm mb-8 font-light" id="modalMessage">Workshop registered successfully.</p>
+            <button onclick="closeModal()" class="w-full bg-bhat-ink dark:bg-bhat-darkAccent text-white dark:text-bhat-ink font-medium text-sm py-3.5 rounded-full hover:bg-stone-800 dark:hover:bg-[#00e6b8] transition-colors shadow-md">
                 Continue
             </button>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div id="confirmModal" class="fixed inset-0 z-50 flex items-center justify-center bg-bhat-ink/40 dark:bg-black/60 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-bhat-darkSurface p-10 rounded-[2rem] max-w-sm w-full mx-6 text-center transform scale-95 transition-transform duration-300 shadow-2xl" id="confirmModalContent">
+            <div class="w-16 h-16 bg-red-50 dark:bg-red-900/30 text-red-500 dark:text-red-400 rounded-full flex items-center justify-center text-2xl mx-auto mb-6 border border-red-100 dark:border-red-800">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 class="text-2xl font-serif font-medium mb-2 text-bhat-ink dark:text-bhat-darkInk">Confirm Deletion</h3>
+            <p class="text-stone-500 dark:text-stone-400 text-sm mb-8 font-light" id="confirmModalMessage">Are you sure you want to delete this workshop?</p>
+            <div class="flex gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 bg-stone-100 dark:bg-stone-800 text-bhat-ink dark:text-bhat-darkInk font-medium text-sm py-3.5 rounded-full hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors shadow-sm">
+                    Cancel
+                </button>
+                <button id="confirmActionBtn" class="flex-1 bg-red-500 text-white font-medium text-sm py-3.5 rounded-full hover:bg-red-600 transition-colors shadow-md">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workshop Detail Modal -->
+    <div id="workshopDetailModal" class="fixed inset-0 z-50 flex items-center justify-center bg-bhat-ink/60 dark:bg-black/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 p-4">
+        <div class="bg-white dark:bg-bhat-darkSurface rounded-[2rem] max-w-2xl w-full max-h-[90vh] overflow-y-auto transform scale-95 transition-transform duration-300 shadow-2xl relative" id="workshopDetailContent">
+            <button onclick="closeWorkshopDetailModal()" class="absolute top-4 right-4 w-10 h-10 bg-white/50 dark:bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center text-bhat-ink dark:text-white z-10 hover:bg-white dark:hover:bg-black transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+            <div id="workshopDetailBody">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Workshop Modal -->
+    <div id="editWorkshopModal" class="fixed inset-0 z-50 flex items-center justify-center bg-bhat-ink/60 dark:bg-black/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 p-4">
+        <div class="bg-white dark:bg-bhat-darkSurface p-8 md:p-10 rounded-[2rem] max-w-2xl w-full max-h-[90vh] overflow-y-auto transform scale-95 transition-transform duration-300 shadow-2xl relative" id="editWorkshopContent">
+            <button onclick="closeEditWorkshopModal()" class="absolute top-4 right-4 w-8 h-8 text-stone-400 hover:text-bhat-ink dark:hover:text-white transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="text-2xl font-serif font-medium mb-6 text-bhat-ink dark:text-bhat-darkInk">Edit Workshop Details</h3>
+            
+            <form id="editWorkshopForm" class="space-y-6">
+                <input type="hidden" id="editWId">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider pl-1">Workshop Name</label>
+                        <input type="text" id="editWName" required class="w-full bg-stone-50 dark:bg-[#121212] border border-stone-200 dark:border-stone-700 rounded-2xl p-3.5 text-bhat-ink dark:text-bhat-darkInk text-sm focus:border-bhat-ink dark:focus:border-bhat-darkAccent outline-none transition-all">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider pl-1">Owner Name</label>
+                        <input type="text" id="editWOwner" required class="w-full bg-stone-50 dark:bg-[#121212] border border-stone-200 dark:border-stone-700 rounded-2xl p-3.5 text-bhat-ink dark:text-bhat-darkInk text-sm focus:border-bhat-ink dark:focus:border-bhat-darkAccent outline-none transition-all">
+                    </div>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider pl-1">Phone Number</label>
+                        <input type="tel" id="editWPhone" required class="w-full bg-stone-50 dark:bg-[#121212] border border-stone-200 dark:border-stone-700 rounded-2xl p-3.5 text-bhat-ink dark:text-bhat-darkInk text-sm focus:border-bhat-ink dark:focus:border-bhat-darkAccent outline-none transition-all" readonly title="Phone number cannot be changed">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider pl-1">Location</label>
+                        <input type="text" id="editWLocation" required class="w-full bg-stone-50 dark:bg-[#121212] border border-stone-200 dark:border-stone-700 rounded-2xl p-3.5 text-bhat-ink dark:text-bhat-darkInk text-sm focus:border-bhat-ink dark:focus:border-bhat-darkAccent outline-none transition-all">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider pl-1">Services Offered (comma separated)</label>
+                    <textarea id="editWServices" required rows="3" class="w-full bg-stone-50 dark:bg-[#121212] border border-stone-200 dark:border-stone-700 rounded-2xl p-3.5 text-bhat-ink dark:text-bhat-darkInk text-sm focus:border-bhat-ink dark:focus:border-bhat-darkAccent outline-none transition-all resize-none"></textarea>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider pl-1">Call Link (Optional)</label>
+                        <input type="text" id="editWLinkCall" class="w-full bg-stone-50 dark:bg-[#121212] border border-stone-200 dark:border-stone-700 rounded-2xl p-3.5 text-bhat-ink dark:text-bhat-darkInk text-sm focus:border-bhat-ink dark:focus:border-bhat-darkAccent outline-none transition-all" placeholder="e.g. tel:+919906584655">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider pl-1">Directions Link (Optional)</label>
+                        <input type="text" id="editWLinkDirections" class="w-full bg-stone-50 dark:bg-[#121212] border border-stone-200 dark:border-stone-700 rounded-2xl p-3.5 text-bhat-ink dark:text-bhat-darkInk text-sm focus:border-bhat-ink dark:focus:border-bhat-darkAccent outline-none transition-all" placeholder="e.g. https://g.co/kgs/...">
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider pl-1">YouTube Link (Optional)</label>
+                        <input type="text" id="editWLinkYoutube" class="w-full bg-stone-50 dark:bg-[#121212] border border-stone-200 dark:border-stone-700 rounded-2xl p-3.5 text-bhat-ink dark:text-bhat-darkInk text-sm focus:border-bhat-ink dark:focus:border-bhat-darkAccent outline-none transition-all" placeholder="e.g. https://youtube.com/...">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider pl-1">Instagram Link (Optional)</label>
+                        <input type="text" id="editWLinkInstagram" class="w-full bg-stone-50 dark:bg-[#121212] border border-stone-200 dark:border-stone-700 rounded-2xl p-3.5 text-bhat-ink dark:text-bhat-darkInk text-sm focus:border-bhat-ink dark:focus:border-bhat-darkAccent outline-none transition-all" placeholder="e.g. https://instagram.com/...">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full ripple btn-dark bg-bhat-ink dark:bg-bhat-darkAccent text-white dark:text-bhat-ink font-medium text-sm p-4 rounded-2xl hover:bg-stone-800 dark:hover:bg-[#00e6b8] transition-all shadow-md mt-4">
+                    Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="fixed inset-0 z-50 flex items-center justify-center bg-bhat-ink/60 dark:bg-black/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 p-4">
+        <div class="bg-white dark:bg-bhat-darkSurface p-8 md:p-10 rounded-[2rem] max-w-md w-full transform scale-95 transition-transform duration-300 shadow-2xl relative" id="bookingContent">
+            <button onclick="closeBookingModal()" class="absolute top-4 right-4 w-8 h-8 text-stone-400 hover:text-bhat-ink dark:hover:text-white transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+            <h3 class="text-2xl font-serif font-medium mb-2 text-bhat-ink dark:text-bhat-darkInk">Book Appointment</h3>
+            <p class="text-stone-500 dark:text-stone-400 text-sm mb-6 font-light" id="bookingWorkshopName"></p>
+            
+            <form id="bookingForm" class="space-y-4">
+                <input type="hidden" id="bookingWorkshopId">
+                <div class="space-y-1">
+                    <label class="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider pl-1">Date</label>
+                    <input type="date" id="bookingDate" required class="w-full bg-stone-50 dark:bg-[#121212] border border-stone-200 dark:border-stone-700 rounded-2xl p-3.5 text-bhat-ink dark:text-bhat-darkInk text-sm focus:border-bhat-ink dark:focus:border-bhat-darkAccent outline-none transition-all">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider pl-1">Time</label>
+                    <input type="time" id="bookingTime" required class="w-full bg-stone-50 dark:bg-[#121212] border border-stone-200 dark:border-stone-700 rounded-2xl p-3.5 text-bhat-ink dark:text-bhat-darkInk text-sm focus:border-bhat-ink dark:focus:border-bhat-darkAccent outline-none transition-all">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider pl-1">Service Needed</label>
+                    <select id="bookingServiceType" required class="w-full bg-stone-50 dark:bg-[#121212] border border-stone-200 dark:border-stone-700 rounded-2xl p-3.5 text-bhat-ink dark:text-bhat-darkInk text-sm focus:border-bhat-ink dark:focus:border-bhat-darkAccent outline-none transition-all">
+                        <option value="" disabled selected>Select a service...</option>
+                        <option value="General Service">General Service</option>
+                        <option value="Oil Change">Oil Change</option>
+                        <option value="Repair">Repair / Fix Issue</option>
+                        <option value="Request Quote">Request a Quote</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[11px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider pl-1">Vehicle Details (Optional)</label>
+                    <input type="text" id="bookingVehicle" class="w-full bg-stone-50 dark:bg-[#121212] border border-stone-200 dark:border-stone-700 rounded-2xl p-3.5 text-bhat-ink dark:text-bhat-darkInk text-sm focus:border-bhat-ink dark:focus:border-bhat-darkAccent outline-none transition-all" placeholder="e.g. Royal Enfield Classic 350">
+                </div>
+                <button type="submit" class="w-full ripple btn-dark bg-bhat-ink dark:bg-bhat-darkAccent text-white dark:text-bhat-ink font-medium text-sm p-4 rounded-2xl hover:bg-stone-800 dark:hover:bg-[#00e6b8] transition-all shadow-md mt-4">
+                    Confirm Booking
+                </button>
+            </form>
         </div>
     </div>
 
@@ -446,19 +696,109 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         let currentUser = localStorage.getItem('bhat_user') || 'Guest User';
+        let currentUserId = localStorage.getItem('bhat_user_id');
+        if (!currentUserId) {
+            currentUserId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('bhat_user_id', currentUserId);
+        }
         let followedWorkshops = JSON.parse(localStorage.getItem('bhat_followed')) || [];
+        let isDarkMode = localStorage.getItem('bhat_dark_mode') === 'true';
+        let mechanicLoggedIn = localStorage.getItem('bhat_mechanic_logged_in') === 'true';
+        let mechanicPhone = localStorage.getItem('bhat_mechanic_phone') || '';
+        let bookings = JSON.parse(localStorage.getItem('bhat_bookings')) || [];
+        let profilePhoto = localStorage.getItem('bhat_profile_photo');
+
+        // Apply dark mode initially
+        if (isDarkMode) {
+            document.documentElement.classList.add('dark');
+        }
+
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            localStorage.setItem('bhat_dark_mode', isDarkMode);
+            if (isDarkMode) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
         
-        const workshopsDB = [
-            { id: 'aashaq-bike-point', name: 'Aashaq Bike Point', location: 'Villagam', phone: '099065 84655', services: ['Repair', 'Service', 'Parts'], rating: 5.0, image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=500&auto=format&fit=crop' },
+        const defaultWorkshopsDB = [
+            { id: 'aashaq-bike-point', name: 'Aashaq Bike Point', location: 'Villagam', phone: '9906584655', services: ['Repair', 'Service', 'Parts'], rating: 5.0, image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=500&auto=format&fit=crop', links: { call: '+919906584655', directions: 'https://g.co/kgs/jH8xfRi', youtube: 'https://youtube.com/@aashaqbikepoint?si=XMJbbCSTaWaL7yU8', instagram: 'https://www.instagram.com/aashaq_bike_point_villagam' } },
             { id: 'ws-2', name: 'Royal Enfield Masters', location: 'Srinagar', phone: '9876543210', services: ['Engine Rebuild', 'Customization'], rating: 4.8, image: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=500&auto=format&fit=crop' },
             { id: 'ws-3', name: 'Valley Auto Care', location: 'Anantnag', phone: '9876543211', services: ['Car Wash', 'Detailing', 'Oil Change'], rating: 4.5, image: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=500&auto=format&fit=crop' },
             { id: 'ws-4', name: 'Speed Moto Tech', location: 'Baramulla', phone: '9876543212', services: ['Diagnostics', 'Electrical'], rating: 4.7, image: 'https://images.unsplash.com/photo-1625047509168-a71c6f959828?q=80&w=500&auto=format&fit=crop' },
         ];
 
+        let workshopsDB = JSON.parse(localStorage.getItem('bhat_workshops_db')) || defaultWorkshopsDB;
         const userWorkshops = JSON.parse(localStorage.getItem('bhat_user_workshops')) || [];
-        const allWorkshops = [...workshopsDB, ...userWorkshops];
+        let allWorkshops = [...workshopsDB, ...userWorkshops];
+
+        function updateAddTabVisibility() {
+            const addBtns = document.querySelectorAll('[onclick="navigate(\'add\')"]');
+            if (userWorkshops.length > 0 || mechanicLoggedIn) {
+                addBtns.forEach(btn => btn.style.display = 'none');
+            } else {
+                addBtns.forEach(btn => btn.style.display = '');
+            }
+        }
+
+        function updateFeaturedWorkshopDOM() {
+            const featured = allWorkshops.find(w => w.id === 'aashaq-bike-point');
+            const featuredSection = document.getElementById('featured-section');
+            if (featured) {
+                if (featuredSection) featuredSection.classList.remove('hidden');
+                const nameEl = document.getElementById('featured-name');
+                const locationEl = document.getElementById('featured-location');
+                const phoneEl = document.getElementById('featured-phone');
+                const imageEl = document.getElementById('featured-image');
+                const galleryEl = document.getElementById('featured-gallery');
+                const servicesEl = document.getElementById('featured-services');
+                const callEl = document.getElementById('featured-link-call');
+                const directionsEl = document.getElementById('featured-link-directions');
+                const youtubeEl = document.getElementById('featured-link-youtube');
+                const instagramEl = document.getElementById('featured-link-instagram');
+                const statusEl = document.getElementById('featured-status');
+                
+                if (nameEl) nameEl.textContent = featured.name;
+                if (locationEl) locationEl.textContent = featured.location;
+                if (phoneEl) phoneEl.textContent = featured.phone;
+                if (imageEl) imageEl.src = featured.image;
+                
+                if (statusEl) {
+                    const isOpen = localStorage.getItem('status_' + featured.id) !== 'closed';
+                    statusEl.innerHTML = isOpen 
+                        ? `<span class="flex items-center gap-1.5 text-green-600 dark:text-green-400"><span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> OPEN NOW</span>`
+                        : `<span class="flex items-center gap-1.5 text-red-600 dark:text-red-400"><span class="w-2 h-2 rounded-full bg-red-500"></span> CLOSED</span>`;
+                }
+                
+                if (servicesEl && featured.services) {
+                    servicesEl.innerHTML = featured.services.map(s => `<span class="text-[10px] font-medium bg-stone-100 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 px-2.5 py-1 rounded-md text-bhat-ink dark:text-bhat-darkInk uppercase tracking-wider">${s}</span>`).join('');
+                }
+                
+                if (galleryEl) {
+                    const gallery = featured.gallery || [featured.image];
+                    galleryEl.innerHTML = gallery.map(img => `
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden flex-shrink-0 border-2 border-white/20 shadow-sm cursor-pointer hover:border-white transition-colors" onclick="document.getElementById('featured-image').src='${img}'">
+                            <img src="${img}" class="w-full h-full object-cover">
+                        </div>
+                    `).join('');
+                }
+                
+                if (featured.links) {
+                    if (callEl) callEl.href = featured.links.call || `tel:${featured.phone}`;
+                    if (directionsEl) directionsEl.href = featured.links.directions || '#';
+                    if (youtubeEl) youtubeEl.href = featured.links.youtube || '#';
+                    if (instagramEl) instagramEl.href = featured.links.instagram || '#';
+                }
+            } else {
+                if (featuredSection) featuredSection.classList.add('hidden');
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
+            updateAddTabVisibility();
+            updateFeaturedWorkshopDOM();
             AOS.init({
                 duration: 800,
                 once: true,
@@ -480,6 +820,13 @@
             }, 800);
 
             document.getElementById('profileNameDisplay').textContent = currentUser;
+            
+            if (profilePhoto) {
+                document.getElementById('profileIcon').classList.add('hidden');
+                const img = document.getElementById('profileImage');
+                img.src = profilePhoto;
+                img.classList.remove('hidden');
+            }
             
             renderWorkshops(allWorkshops);
             renderFollowed();
@@ -517,6 +864,14 @@
 
             document.getElementById('addWorkshopForm').addEventListener('submit', (e) => {
                 e.preventDefault();
+                const phoneVal = document.getElementById('wPhone').value.trim();
+                
+                const existing = allWorkshops.find(w => w.phone.replace(/\s/g, '') === phoneVal.replace(/\s/g, ''));
+                if (existing) {
+                    showModal("A workshop with this phone number is already registered. Please use the dashboard to manage it.");
+                    return;
+                }
+
                 const newWorkshop = {
                     id: 'user-ws-' + Date.now(),
                     name: document.getElementById('wName').value,
@@ -532,9 +887,18 @@
                 localStorage.setItem('bhat_user_workshops', JSON.stringify(userWorkshops));
                 allWorkshops.push(newWorkshop);
                 
+                mechanicLoggedIn = true;
+                mechanicPhone = newWorkshop.phone;
+                localStorage.setItem('bhat_mechanic_logged_in', 'true');
+                localStorage.setItem('bhat_mechanic_phone', mechanicPhone);
+                
+                updateAddTabVisibility();
+                
                 e.target.reset();
                 showModal('Workshop registered successfully! It is now live on the network.');
                 renderWorkshops(allWorkshops);
+                renderDashboard();
+                navigate('dashboard');
             });
         });
 
@@ -569,33 +933,48 @@
 
             workshops.forEach((w, index) => {
                 const isFollowed = followedWorkshops.includes(w.id);
+                const isOpen = localStorage.getItem('status_' + w.id) !== 'closed';
+                const statusBadge = isOpen 
+                    ? `<div class="absolute top-4 left-4 bg-white/90 dark:bg-black/90 backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1.5 text-green-600 dark:text-green-400 shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span> Open Now</div>`
+                    : `<div class="absolute top-4 left-4 bg-white/90 dark:bg-black/90 backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1.5 text-red-600 dark:text-red-400 shadow-sm"><span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Closed</div>`;
+                
                 const card = document.createElement('div');
-                card.className = 'bg-white border border-stone-100 shadow-[0_4px_20px_rgba(0,0,0,0.02)] rounded-3xl overflow-hidden group';
+                card.className = 'bg-white dark:bg-bhat-darkSurface border border-stone-100 dark:border-stone-800 shadow-[0_4px_20px_rgba(0,0,0,0.02)] rounded-3xl overflow-hidden group flex flex-col';
                 card.setAttribute('data-aos', 'fade-up');
                 card.setAttribute('data-aos-delay', (index % 3) * 100);
                 
                 card.innerHTML = `
-                    <div class="h-48 overflow-hidden relative">
+                    <div class="h-48 overflow-hidden relative cursor-pointer" onclick="openWorkshopDetail('${w.id}')">
                         <img src="${w.image}" alt="${w.name}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700">
-                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 text-bhat-ink shadow-sm">
+                        ${statusBadge}
+                        <div class="absolute top-4 right-4 bg-white/90 dark:bg-black/90 backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 text-bhat-ink dark:text-white shadow-sm">
                             <i class="fas fa-star text-amber-500"></i> ${w.rating}
                         </div>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-xl font-serif font-medium mb-1 truncate text-bhat-ink">${w.name}</h3>
-                        <p class="text-stone-500 text-xs mb-5 flex items-center gap-1.5 font-medium"><i class="fas fa-map-marker-alt text-stone-300"></i> ${w.location}</p>
-                        <div class="flex flex-wrap gap-2 mb-6">
-                            ${w.services.slice(0,3).map(s => `<span class="text-[10px] font-medium uppercase tracking-wider bg-stone-50 border border-stone-100 px-2 py-1 rounded-md text-stone-500">${s}</span>`).join('')}
-                            ${w.services.length > 3 ? `<span class="text-[10px] font-medium uppercase tracking-wider bg-stone-50 border border-stone-100 px-2 py-1 rounded-md text-stone-500">+${w.services.length - 3}</span>` : ''}
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
+                            <span class="opacity-0 group-hover:opacity-100 bg-white/90 dark:bg-black/90 text-bhat-ink dark:text-white text-xs font-bold px-3 py-1.5 rounded-full transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-sm">View Details</span>
                         </div>
-                        <div class="flex gap-2">
-                            <a href="tel:${w.phone}" class="flex-1 bg-stone-50 hover:bg-stone-100 border border-stone-100 transition-colors text-center py-2.5 rounded-xl text-xs font-semibold text-bhat-ink">
-                                <i class="fas fa-phone text-stone-400 mr-1"></i> Call
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <h3 class="text-xl font-serif font-medium mb-1 truncate text-bhat-ink dark:text-bhat-darkInk">${w.name}</h3>
+                        <p class="text-stone-500 dark:text-stone-400 text-xs mb-5 flex items-center gap-1.5 font-medium"><i class="fas fa-map-marker-alt text-stone-300 dark:text-stone-600"></i> ${w.location}</p>
+                        <div class="flex flex-wrap gap-2 mb-6 flex-1">
+                            ${w.services.slice(0,3).map(s => `<span class="text-[10px] font-medium uppercase tracking-wider bg-stone-50 dark:bg-stone-800 border border-stone-100 dark:border-stone-700 px-2 py-1 rounded-md text-stone-500 dark:text-stone-400">${s}</span>`).join('')}
+                            ${w.services.length > 3 ? `<span class="text-[10px] font-medium uppercase tracking-wider bg-stone-50 dark:bg-stone-800 border border-stone-100 dark:border-stone-700 px-2 py-1 rounded-md text-stone-500 dark:text-stone-400">+${w.services.length - 3}</span>` : ''}
+                        </div>
+                        <div class="flex gap-2 mb-3">
+                            <a href="tel:${w.phone}" class="flex-1 bg-stone-50 dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 border border-stone-100 dark:border-stone-700 transition-colors text-center py-2.5 rounded-xl text-xs font-semibold text-bhat-ink dark:text-bhat-darkInk">
+                                <i class="fas fa-phone text-stone-400 dark:text-stone-500 mr-1"></i> Call
                             </a>
-                            <button onclick="toggleFollow('${w.id}')" id="btn-follow-${w.id}" class="w-11 h-11 rounded-xl flex items-center justify-center transition-colors border ${isFollowed ? 'bg-red-50 border-red-100 text-red-500' : 'bg-stone-50 border-stone-100 text-stone-400 hover:bg-stone-100'}">
+                            <a href="https://wa.me/91${w.phone}?text=Hi,%20I%20found%20your%20workshop%20on%20Bhat%20Network.%20I%20need%20help%20with%20my%20bike..." target="_blank" class="flex-1 bg-stone-50 dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 border border-stone-100 dark:border-stone-700 transition-colors text-center py-2.5 rounded-xl text-xs font-semibold text-bhat-ink dark:text-bhat-darkInk">
+                                <i class="fab fa-whatsapp text-green-500 mr-1"></i> Chat
+                            </a>
+                            <button onclick="toggleFollow('${w.id}')" id="btn-follow-${w.id}" class="w-11 h-11 rounded-xl flex items-center justify-center transition-colors border ${isFollowed ? 'bg-red-50 dark:bg-red-900/30 border-red-100 dark:border-red-800 text-red-500 dark:text-red-400' : 'bg-stone-50 dark:bg-stone-800 border-stone-100 dark:border-stone-700 text-stone-400 dark:text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-700'}">
                                 <i class="${isFollowed ? 'fas' : 'far'} fa-heart"></i>
                             </button>
                         </div>
+                        <button onclick="openBookingModal('${w.id}')" class="w-full bg-bhat-ink dark:bg-bhat-darkAccent text-white dark:text-bhat-ink hover:bg-stone-800 dark:hover:bg-[#00e6b8] transition-colors py-2.5 rounded-xl text-xs font-semibold shadow-sm">
+                            <i class="far fa-calendar-check mr-1"></i> Book Slot
+                        </button>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -630,10 +1009,10 @@
             
             if (id === 'aashaq-bike-point') {
                 if (isFollowed) {
-                    btn.innerHTML = '<i class="fas fa-heart"></i> <span>Saved</span>';
+                    btn.innerHTML = '<i class="fas fa-heart"></i> <span>Saved to Garage</span>';
                     btn.className = 'mt-6 w-full ripple bg-red-50 border border-red-100 text-red-500 transition-all p-4 rounded-2xl font-semibold flex items-center justify-center gap-2 text-sm';
                 } else {
-                    btn.innerHTML = '<i class="far fa-heart"></i> <span>Save Workshop</span>';
+                    btn.innerHTML = '<i class="far fa-heart"></i> <span>Save to Garage</span>';
                     btn.className = 'mt-6 w-full ripple bg-white border border-stone-200 text-bhat-ink hover:bg-stone-50 transition-all p-4 rounded-2xl font-semibold flex items-center justify-center gap-2 shadow-sm text-sm';
                 }
             } else {
@@ -645,9 +1024,7 @@
                     btn.className = 'w-11 h-11 rounded-xl flex items-center justify-center transition-colors border bg-stone-50 border-stone-100 text-stone-400 hover:bg-stone-100';
                 }
             }
-        }
-
-        function renderFollowed() {
+        }function renderFollowed() {
             const list = document.getElementById('followedList');
             const emptyMsg = document.getElementById('emptyFollowed');
             
@@ -728,6 +1105,22 @@
             }
         }
 
+        function handleProfilePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profilePhoto = e.target.result;
+                    localStorage.setItem('bhat_profile_photo', profilePhoto);
+                    document.getElementById('profileIcon').classList.add('hidden');
+                    const img = document.getElementById('profileImage');
+                    img.src = profilePhoto;
+                    img.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         function showModal(msg) {
             document.getElementById('modalMessage').textContent = msg;
             const modal = document.getElementById('successModal');
@@ -755,6 +1148,41 @@
             }, 300);
         }
 
+        function showConfirmModal(msg, onConfirm) {
+            document.getElementById('confirmModalMessage').textContent = msg;
+            const modal = document.getElementById('confirmModal');
+            const content = document.getElementById('confirmModalContent');
+            const confirmBtn = document.getElementById('confirmActionBtn');
+            
+            // Remove old event listeners by cloning
+            const newConfirmBtn = confirmBtn.cloneNode(true);
+            confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+            
+            newConfirmBtn.addEventListener('click', () => {
+                onConfirm();
+                closeConfirmModal();
+            });
+
+            modal.classList.remove('hidden');
+            void modal.offsetWidth;
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+            content.classList.add('scale-100');
+        }
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('confirmModal');
+            const content = document.getElementById('confirmModalContent');
+            
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
         // Continuous floating animation for background tools
         gsap.utils.toArray('.floating-tool').forEach(tool => {
             gsap.to(tool, {
@@ -768,39 +1196,677 @@
             });
         });
 
-        document.addEventListener('mousemove', (e) => {
-            // Home parallax background
-            if(document.getElementById('home').classList.contains('active')) {
-                const x = (window.innerWidth - e.pageX * 2) / 100;
-                const y = (window.innerHeight - e.pageY * 2) / 100;
-                gsap.to('.parallax-bg', {
-                    x: x,
-                    y: y,
-                    duration: 1,
-                    ease: "power1.out"
-                });
+        // --- New Features Logic ---
+
+        function openWorkshopDetail(id) {
+            const workshop = allWorkshops.find(w => w.id === id);
+            if (!workshop) return;
+
+            const modal = document.getElementById('workshopDetailModal');
+            const content = document.getElementById('workshopDetailContent');
+            const body = document.getElementById('workshopDetailBody');
+
+            // Generate gallery images (mocking if not present)
+            const gallery = workshop.gallery || [
+                workshop.image,
+                'https://images.unsplash.com/photo-1625047509168-a71c6f959828?q=80&w=500&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=500&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=500&auto=format&fit=crop'
+            ];
+
+            const galleryHtml = gallery.map(img => `
+                <div class="min-w-[120px] h-24 rounded-xl overflow-hidden flex-shrink-0 border border-stone-200 dark:border-stone-700">
+                    <img src="${img}" class="w-full h-full object-cover cursor-pointer hover:opacity-80 transition-opacity" onclick="document.getElementById('mainWorkshopImage').src='${img}'">
+                </div>
+            `).join('');
+
+            const hoursHtml = `
+                <ul class="text-sm text-stone-600 dark:text-stone-400 space-y-2">
+                    <li class="flex justify-between"><span class="font-medium">Monday</span> <span>10:00 AM - 8:00 PM</span></li>
+                    <li class="flex justify-between"><span class="font-medium">Tuesday</span> <span>10:00 AM - 8:00 PM</span></li>
+                    <li class="flex justify-between"><span class="font-medium">Wednesday</span> <span>10:00 AM - 8:00 PM</span></li>
+                    <li class="flex justify-between"><span class="font-medium">Thursday</span> <span>10:00 AM - 8:00 PM</span></li>
+                    <li class="flex justify-between text-red-500"><span class="font-medium">Friday</span> <span>Closed</span></li>
+                    <li class="flex justify-between"><span class="font-medium">Saturday</span> <span>10:00 AM - 8:00 PM</span></li>
+                    <li class="flex justify-between"><span class="font-medium">Sunday</span> <span>10:00 AM - 4:00 PM</span></li>
+                </ul>
+            `;
+
+            body.innerHTML = `
+                <div class="h-64 sm:h-80 relative">
+                    <img id="mainWorkshopImage" src="${workshop.image}" class="w-full h-full object-cover transition-all duration-300">
+                    <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/90 via-black/50 to-transparent p-6 pt-20">
+                        <h2 class="text-3xl font-serif font-medium text-white mb-1">${workshop.name}</h2>
+                        <p class="text-stone-300 text-sm flex items-center gap-2"><i class="fas fa-map-marker-alt"></i> ${workshop.location}</p>
+                    </div>
+                </div>
+                <div class="p-6 sm:p-8">
+                    <!-- Photo Gallery -->
+                    <div class="mb-8">
+                        <h4 class="text-sm font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-3">Photo Gallery</h4>
+                        <div class="flex overflow-x-auto gap-3 pb-2 scrollbar-hide">
+                            ${galleryHtml}
+                        </div>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-sm font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-4">Services</h4>
+                            <div class="flex flex-wrap gap-2 mb-8">
+                                ${workshop.services.map(s => `<span class="text-xs font-medium bg-stone-50 dark:bg-stone-800 border border-stone-100 dark:border-stone-700 px-3 py-1.5 rounded-lg text-bhat-ink dark:text-bhat-darkInk">${s}</span>`).join('')}
+                            </div>
+                            
+                            <h4 class="text-sm font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-4">Contact Info</h4>
+                            <div class="space-y-3 mb-8">
+                                <div class="flex items-center gap-3 text-sm text-bhat-ink dark:text-bhat-darkInk">
+                                    <div class="w-8 h-8 rounded-full bg-stone-50 dark:bg-stone-800 flex items-center justify-center text-stone-500 dark:text-stone-400"><i class="fas fa-phone"></i></div>
+                                    <a href="tel:${workshop.phone}" class="hover:underline">${workshop.phone}</a>
+                                </div>
+                                <div class="flex items-center gap-3 text-sm text-bhat-ink dark:text-bhat-darkInk">
+                                    <div class="w-8 h-8 rounded-full bg-stone-50 dark:bg-stone-800 flex items-center justify-center text-green-500 dark:text-green-400"><i class="fab fa-whatsapp"></i></div>
+                                    <a href="https://wa.me/91${workshop.phone}?text=Hi,%20I%20found%20your%20workshop%20on%20Bhat%20Network.%20I%20need%20help%20with%20my%20bike..." target="_blank" class="hover:underline text-green-600 dark:text-green-400">Chat on WhatsApp</a>
+                                </div>
+                            </div>
+
+                            <h4 class="text-sm font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-4">Opening Hours</h4>
+                            <div class="bg-stone-50 dark:bg-stone-800/50 rounded-2xl p-4 border border-stone-100 dark:border-stone-700 mb-8 sm:mb-0">
+                                ${hoursHtml}
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-4">Location</h4>
+                            <div class="rounded-2xl overflow-hidden border border-stone-200 dark:border-stone-700 h-64 mb-6 relative bg-stone-100 dark:bg-stone-800 shadow-inner">
+                                <iframe width="100%" height="100%" frameborder="0" style="border:0" src="https://maps.google.com/maps?q=${encodeURIComponent(workshop.name + ' ' + workshop.location)}&t=&z=14&ie=UTF8&iwloc=&output=embed" allowfullscreen></iframe>
+                            </div>
+                            <button onclick="openBookingModal('${workshop.id}'); closeWorkshopDetailModal();" class="w-full ripple btn-dark bg-bhat-ink dark:bg-bhat-darkAccent text-white dark:text-bhat-ink font-medium text-sm p-4 rounded-2xl hover:bg-stone-800 dark:hover:bg-[#00e6b8] transition-all shadow-md mb-8">
+                                Book Appointment / Request Quote
+                            </button>
+
+                            <h4 class="text-sm font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-4">Reviews & Ratings</h4>
+                            <div id="workshopReviewsList" class="space-y-3 mb-4 max-h-48 overflow-y-auto pr-2 scrollbar-hide">
+                                <!-- Reviews injected here -->
+                            </div>
+                            <form id="reviewForm" onsubmit="submitReview(event, '${workshop.id}')" class="bg-stone-50 dark:bg-stone-800/50 p-4 rounded-2xl border border-stone-100 dark:border-stone-700">
+                                <div class="mb-3">
+                                    <select id="reviewRating" class="w-full bg-white dark:bg-[#121212] border border-stone-200 dark:border-stone-700 rounded-xl p-2.5 text-sm outline-none text-bhat-ink dark:text-bhat-darkInk" required>
+                                        <option value="5">⭐⭐⭐⭐⭐ (5/5) - Excellent</option>
+                                        <option value="4">⭐⭐⭐⭐ (4/5) - Very Good</option>
+                                        <option value="3">⭐⭐⭐ (3/5) - Average</option>
+                                        <option value="2">⭐⭐ (2/5) - Poor</option>
+                                        <option value="1">⭐ (1/5) - Terrible</option>
+                                    </select>
+                                </div>
+                                <textarea id="reviewText" placeholder="Write your review..." class="w-full bg-white dark:bg-[#121212] border border-stone-200 dark:border-stone-700 rounded-xl p-3 text-sm outline-none resize-none mb-3 text-bhat-ink dark:text-bhat-darkInk" rows="2" required></textarea>
+                                <button type="submit" class="w-full bg-bhat-ink dark:bg-bhat-darkAccent text-white dark:text-bhat-ink px-4 py-2.5 rounded-xl text-xs font-semibold hover:bg-stone-800 dark:hover:bg-[#00e6b8] transition-colors">Submit Review</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            void modal.offsetWidth;
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+            content.classList.add('scale-100');
+            
+            renderReviews(workshop.id);
+            
+            const existingReview = (reviewsDB[workshop.id] || []).find(r => r.userId === currentUserId);
+            if (existingReview) {
+                document.getElementById('reviewRating').value = existingReview.rating;
+                document.getElementById('reviewText').value = existingReview.text;
+                document.querySelector('#reviewForm button[type="submit"]').textContent = 'Update Review';
+            }
+        }
+
+        function closeWorkshopDetailModal() {
+            const modal = document.getElementById('workshopDetailModal');
+            const content = document.getElementById('workshopDetailContent');
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function openBookingModal(id) {
+            const workshop = allWorkshops.find(w => w.id === id);
+            if (!workshop) return;
+
+            document.getElementById('bookingWorkshopId').value = id;
+            document.getElementById('bookingWorkshopName').textContent = `Booking at ${workshop.name}`;
+            
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('bookingDate').setAttribute('min', today);
+
+            const modal = document.getElementById('bookingModal');
+            const content = document.getElementById('bookingContent');
+            modal.classList.remove('hidden');
+            void modal.offsetWidth;
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+            content.classList.add('scale-100');
+
+            const waBtn = document.getElementById('wa-float-btn');
+            const sosDesktop = document.getElementById('sos-desktop-btn');
+            const sosMobile = document.getElementById('sos-mobile-btn');
+            if (waBtn) waBtn.style.display = 'none';
+            if (sosDesktop) sosDesktop.style.display = 'none';
+            if (sosMobile) sosMobile.style.display = 'none';
+        }
+
+        function closeBookingModal() {
+            const modal = document.getElementById('bookingModal');
+            const content = document.getElementById('bookingContent');
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+
+            const waBtn = document.getElementById('wa-float-btn');
+            const sosDesktop = document.getElementById('sos-desktop-btn');
+            const sosMobile = document.getElementById('sos-mobile-btn');
+            if (waBtn) waBtn.style.display = '';
+            if (sosDesktop) sosDesktop.style.display = '';
+            if (sosMobile) sosMobile.style.display = '';
+        }
+
+        document.getElementById('bookingForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('bookingWorkshopId').value;
+            const date = document.getElementById('bookingDate').value;
+            const time = document.getElementById('bookingTime').value;
+            const serviceType = document.getElementById('bookingServiceType').value;
+            const vehicle = document.getElementById('bookingVehicle').value;
+
+            bookings.push({ id: Date.now(), workshopId: id, date, time, serviceType, vehicle, status: 'Pending' });
+            localStorage.setItem('bhat_bookings', JSON.stringify(bookings));
+
+            closeBookingModal();
+            e.target.reset();
+            showModal('Your appointment has been booked successfully! The workshop will contact you soon.');
+        });
+
+        // Reviews Logic
+        let reviewsDB = JSON.parse(localStorage.getItem('bhat_reviews')) || {};
+
+        function submitReview(event, workshopId) {
+            event.preventDefault();
+            const rating = parseInt(document.getElementById('reviewRating').value);
+            const text = document.getElementById('reviewText').value;
+            
+            if (!reviewsDB[workshopId]) {
+                reviewsDB[workshopId] = [];
+            }
+            
+            const existingIndex = reviewsDB[workshopId].findIndex(r => r.userId === currentUserId);
+            
+            const reviewObj = {
+                id: existingIndex > -1 ? reviewsDB[workshopId][existingIndex].id : 'rev_' + Date.now(),
+                userId: currentUserId,
+                user: currentUser,
+                rating: rating,
+                text: text,
+                date: new Date().toLocaleDateString()
+            };
+            
+            if (existingIndex > -1) {
+                reviewsDB[workshopId][existingIndex] = reviewObj;
+            } else {
+                reviewsDB[workshopId].unshift(reviewObj);
+            }
+            
+            localStorage.setItem('bhat_reviews', JSON.stringify(reviewsDB));
+            
+            // Recalculate average rating
+            const workshop = allWorkshops.find(w => w.id === workshopId);
+            if (workshop) {
+                const total = reviewsDB[workshopId].reduce((sum, r) => sum + r.rating, 0);
+                workshop.rating = (total / reviewsDB[workshopId].length).toFixed(1);
+                
+                // Update in storage
+                const wsIndex = userWorkshops.findIndex(w => w.id === workshopId);
+                if (wsIndex > -1) localStorage.setItem('bhat_user_workshops', JSON.stringify(userWorkshops));
+                const dbIndex = workshopsDB.findIndex(w => w.id === workshopId);
+                if (dbIndex > -1) localStorage.setItem('bhat_workshops_db', JSON.stringify(workshopsDB));
+            }
+            
+            document.getElementById('reviewForm').reset();
+            document.querySelector('#reviewForm button[type="submit"]').textContent = 'Submit Review';
+            renderReviews(workshopId);
+            
+            if(document.getElementById('explore').classList.contains('active')) {
+                renderWorkshops(allWorkshops);
+            }
+        }
+
+        function editReview(workshopId) {
+            const review = reviewsDB[workshopId].find(r => r.userId === currentUserId);
+            if (review) {
+                document.getElementById('reviewRating').value = review.rating;
+                document.getElementById('reviewText').value = review.text;
+                document.querySelector('#reviewForm button[type="submit"]').textContent = 'Update Review';
+                document.getElementById('reviewForm').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function deleteReview(workshopId, reviewId) {
+            showConfirmModal("Are you sure you want to delete your review?", () => {
+                reviewsDB[workshopId] = reviewsDB[workshopId].filter(r => r.id !== reviewId);
+                localStorage.setItem('bhat_reviews', JSON.stringify(reviewsDB));
+                
+                const workshop = allWorkshops.find(w => w.id === workshopId);
+                if (workshop) {
+                    if (reviewsDB[workshopId].length > 0) {
+                        const total = reviewsDB[workshopId].reduce((sum, r) => sum + r.rating, 0);
+                        workshop.rating = (total / reviewsDB[workshopId].length).toFixed(1);
+                    } else {
+                        workshop.rating = 5.0;
+                    }
+                    const wsIndex = userWorkshops.findIndex(w => w.id === workshopId);
+                    if (wsIndex > -1) localStorage.setItem('bhat_user_workshops', JSON.stringify(userWorkshops));
+                    const dbIndex = workshopsDB.findIndex(w => w.id === workshopId);
+                    if (dbIndex > -1) localStorage.setItem('bhat_workshops_db', JSON.stringify(workshopsDB));
+                }
+                
+                document.getElementById('reviewForm').reset();
+                document.querySelector('#reviewForm button[type="submit"]').textContent = 'Submit Review';
+                renderReviews(workshopId);
+                
+                if(document.getElementById('explore').classList.contains('active')) {
+                    renderWorkshops(allWorkshops);
+                }
+            });
+        }
+
+        function renderReviews(workshopId) {
+            const list = document.getElementById('workshopReviewsList');
+            if (!list) return;
+            
+            const reviews = reviewsDB[workshopId] || [];
+            if (reviews.length === 0) {
+                list.innerHTML = '<p class="text-xs text-stone-500 dark:text-stone-400 italic">No reviews yet. Be the first to review!</p>';
+                return;
+            }
+            
+            list.innerHTML = reviews.map(r => `
+                <div class="bg-white dark:bg-[#121212] p-3 rounded-xl border border-stone-100 dark:border-stone-800 relative">
+                    <div class="flex justify-between items-start mb-1">
+                        <span class="text-xs font-bold text-bhat-ink dark:text-bhat-darkInk">${r.user}</span>
+                        <span class="text-[10px] text-stone-400">${r.date}</span>
+                    </div>
+                    <div class="text-[10px] mb-1">${'⭐'.repeat(r.rating)}</div>
+                    <p class="text-xs text-stone-600 dark:text-stone-400">${r.text}</p>
+                    ${r.userId === currentUserId ? `
+                        <div class="absolute top-2 right-2 flex gap-3">
+                            <button onclick="editReview('${workshopId}')" class="text-blue-500 hover:text-blue-600 text-xs" title="Edit Review"><i class="fas fa-edit"></i></button>
+                            <button onclick="deleteReview('${workshopId}', '${r.id}')" class="text-red-500 hover:text-red-600 text-xs" title="Delete Review"><i class="fas fa-trash"></i></button>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Dashboard Logic
+        function loginMechanic() {
+            const phone = document.getElementById('mechanicPhoneInput').value;
+            if (phone.trim().length > 5) {
+                mechanicLoggedIn = true;
+                mechanicPhone = phone.trim();
+                localStorage.setItem('bhat_mechanic_logged_in', 'true');
+                localStorage.setItem('bhat_mechanic_phone', mechanicPhone);
+                updateAddTabVisibility();
+                renderDashboard();
+            } else {
+                showModal("Please enter a valid phone number.");
+            }
+        }function renderDashboard() {
+            const loginSection = document.getElementById('dashboardLogin');
+            const contentSection = document.getElementById('dashboardContent');
+            
+            if (!mechanicLoggedIn) {
+                loginSection.classList.remove('hidden');
+                contentSection.classList.add('hidden');
+                return;
             }
 
-            // Reactive floating tools parallax
-            const mouseX = (e.clientX / window.innerWidth - 0.5);
-            const mouseY = (e.clientY / window.innerHeight - 0.5);
-            
-            gsap.utils.toArray('.floating-tool').forEach(tool => {
-                const speed = parseFloat(tool.getAttribute('data-speed'));
-                gsap.to(tool, {
-                    x: mouseX * 80 * speed,
-                    y: mouseY * 80 * speed,
-                    duration: 2,
-                    ease: "power2.out",
-                    overwrite: "auto"
-                });
-            });
-        });
-    </script>
+            loginSection.classList.add('hidden');
+            contentSection.classList.remove('hidden');
 
-    <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/" target="_blank" class="fixed bottom-24 md:bottom-8 right-6 z-50 w-14 h-14 bg-[#25D366] hover:bg-[#128C7E] text-white rounded-full flex items-center justify-center text-3xl shadow-lg transition-colors whatsapp-float">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+            const myWorkshops = allWorkshops.filter(w => w.phone.replace(/\s/g, '') === mechanicPhone.replace(/\s/g, '') || mechanicPhone === '9906584655');
+            
+            if (myWorkshops.length === 0) {
+                contentSection.innerHTML = `
+                    <div class="text-center bg-white dark:bg-bhat-darkSurface border border-stone-100 dark:border-stone-800 shadow-sm p-10 rounded-[2rem]">
+                        <div class="w-16 h-16 bg-stone-50 dark:bg-stone-800 text-stone-400 dark:text-stone-500 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
+                            <i class="fas fa-store-slash"></i>
+                        </div>
+                        <h3 class="text-xl font-serif font-medium text-bhat-ink dark:text-bhat-darkInk mb-2">No Workshops Found</h3>
+                        <p class="text-stone-500 dark:text-stone-400 text-sm mb-6">We couldn't find any workshops linked to ${mechanicPhone}.</p>
+                        <button onclick="navigate('add')" class="bg-bhat-ink dark:bg-bhat-darkAccent text-white dark:text-bhat-ink px-6 py-3 rounded-xl font-medium text-sm hover:bg-stone-800 dark:hover:bg-[#00e6b8] transition-colors">Register a Workshop</button>
+                        <button onclick="logoutMechanic()" class="block mx-auto mt-4 text-stone-400 dark:text-stone-500 hover:text-bhat-ink dark:hover:text-white text-xs underline">Logout</button>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-serif font-medium text-bhat-ink dark:text-bhat-darkInk">My Workshops</h3>
+                    <button onclick="logoutMechanic()" class="text-stone-400 dark:text-stone-500 hover:text-bhat-ink dark:hover:text-white text-sm flex items-center gap-2 transition-colors">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            `;
+
+            myWorkshops.forEach(w => {
+                const isOpen = localStorage.getItem('status_' + w.id) !== 'closed';
+                const savesCount = followedWorkshops.filter(id => id === w.id).length;
+                const myBookings = bookings.filter(b => b.workshopId === w.id);
+                const pendingBookings = myBookings.filter(b => b.status === 'Pending').length;
+                const reviews = reviewsDB[w.id] || [];
+                
+                html += `
+                    <div class="bg-white dark:bg-bhat-darkSurface border border-stone-100 dark:border-stone-800 shadow-[0_4px_20px_rgba(0,0,0,0.02)] rounded-[2rem] overflow-hidden mb-6">
+                        <div class="p-6 md:p-8 border-b border-stone-100 dark:border-stone-800 flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <img src="${w.image}" class="w-20 h-20 rounded-2xl object-cover border border-stone-100 dark:border-stone-700">
+                                <div>
+                                    <h4 class="text-xl font-serif font-medium text-bhat-ink dark:text-bhat-darkInk mb-1">${w.name}</h4>
+                                    <p class="text-stone-500 dark:text-stone-400 text-xs flex items-center gap-1.5"><i class="fas fa-map-marker-alt"></i> ${w.location}</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-3 w-full md:w-auto">
+                                <button onclick="toggleWorkshopStatus('${w.id}')" class="flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-semibold border transition-colors flex items-center justify-center gap-2 ${isOpen ? 'bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-800 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50' : 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50'}">
+                                    <i class="fas fa-power-off"></i> ${isOpen ? 'Mark as Closed' : 'Mark as Open'}
+                                </button>
+                                <button onclick="openEditWorkshopModal('${w.id}')" class="flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-semibold bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-bhat-ink dark:text-bhat-darkInk hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors flex items-center justify-center gap-2">
+                                    <i class="fas fa-edit"></i> Edit Details
+                                </button>
+                                <button onclick="deleteWorkshop('${w.id}')" class="flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-semibold bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors flex items-center justify-center gap-2">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                                <button onclick="document.getElementById('photoUpload-${w.id}').click()" class="flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-semibold bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors flex items-center justify-center gap-2">
+                                    <i class="fas fa-camera"></i> Update Photos
+                                </button>
+                                <input type="file" id="photoUpload-${w.id}" class="hidden" accept="image/*" multiple onchange="handleWorkshopPhotoUpload(event, '${w.id}')">
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 divide-x divide-stone-100 dark:divide-stone-800 bg-stone-50/50 dark:bg-[#121212]/50">
+                            <div class="p-6 text-center">
+                                <div class="text-2xl font-serif font-medium text-bhat-ink dark:text-bhat-darkInk mb-1">${savesCount}</div>
+                                <div class="text-[10px] text-stone-400 font-semibold uppercase tracking-wider">Saves</div>
+                            </div>
+                            <div class="p-6 text-center relative">
+                                ${pendingBookings > 0 ? `<div class="absolute top-4 right-4 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>` : ''}
+                                <div class="text-2xl font-serif font-medium text-bhat-ink dark:text-bhat-darkInk mb-1">${myBookings.length}</div>
+                                <div class="text-[10px] text-stone-400 font-semibold uppercase tracking-wider">Bookings</div>
+                            </div>
+                            <div class="p-6 text-center">
+                                <div class="text-2xl font-serif font-medium text-bhat-ink dark:text-bhat-darkInk mb-1 flex items-center justify-center gap-1">
+                                    ${w.rating} <i class="fas fa-star text-amber-500 text-sm"></i>
+                                </div>
+                                <div class="text-[10px] text-stone-400 font-semibold uppercase tracking-wider">${reviews.length} Reviews</div>
+                            </div>
+                        </div>
+
+                        <!-- Bookings List -->
+                        <div class="p-6 md:p-8 border-t border-stone-100 dark:border-stone-800">
+                            <h5 class="text-sm font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider mb-4">Recent Bookings</h5>
+                            ${myBookings.length === 0 ? '<p class="text-xs text-stone-400 italic">No bookings yet.</p>' : `
+                                <div class="space-y-3 max-h-60 overflow-y-auto pr-2 scrollbar-hide">
+                                    ${myBookings.map(b => `
+                                        <div class="bg-stone-50 dark:bg-stone-800/50 p-4 rounded-xl border border-stone-100 dark:border-stone-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                            <div>
+                                                <div class="flex items-center gap-2 mb-1">
+                                                    <span class="text-sm font-medium text-bhat-ink dark:text-bhat-darkInk">${b.date} at ${b.time}</span>
+                                                    <span class="text-[10px] px-2 py-0.5 rounded bg-stone-200 dark:bg-stone-700 text-stone-600 dark:text-stone-300">${b.serviceType}</span>
+                                                </div>
+                                                <p class="text-xs text-stone-500 dark:text-stone-400">Vehicle: ${b.vehicle || 'Not specified'}</p>
+                                            </div>
+                                            <select onchange="updateBookingStatus(${b.id}, this.value)" class="bg-white dark:bg-[#121212] border border-stone-200 dark:border-stone-700 rounded-lg px-3 py-1.5 text-xs font-medium outline-none text-bhat-ink dark:text-bhat-darkInk ${b.status === 'Pending' ? 'text-amber-600 dark:text-amber-400' : b.status === 'Confirmed' ? 'text-blue-600 dark:text-blue-400' : b.status === 'Completed' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}">
+                                                <option value="Pending" ${b.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                                <option value="Confirmed" ${b.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
+                                                <option value="Completed" ${b.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                                                <option value="Cancelled" ${b.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                                            </select>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+            });
+
+            contentSection.innerHTML = html;
+        }
+
+        function logoutMechanic() {
+            mechanicLoggedIn = false;
+            mechanicPhone = '';
+            localStorage.removeItem('bhat_mechanic_logged_in');
+            localStorage.removeItem('bhat_mechanic_phone');
+            document.getElementById('mechanicPhoneInput').value = '';
+            updateAddTabVisibility();
+            renderDashboard();
+        }
+
+        function toggleWorkshopStatus(id) {
+            const currentStatus = localStorage.getItem('status_' + id);
+            if (currentStatus === 'closed') {
+                localStorage.removeItem('status_' + id);
+            } else {
+                localStorage.setItem('status_' + id, 'closed');
+            }
+            renderDashboard();
+            if(document.getElementById('explore').classList.contains('active')) {
+                renderWorkshops(allWorkshops);
+            }
+            updateFeaturedWorkshopDOM();
+        }
+
+        function deleteWorkshop(id) {
+            showConfirmModal("Are you sure you want to delete this workshop? This action cannot be undone.", () => {
+                // Remove from userWorkshops
+                const userIndex = userWorkshops.findIndex(w => w.id === id);
+                if (userIndex > -1) {
+                    userWorkshops.splice(userIndex, 1);
+                    localStorage.setItem('bhat_user_workshops', JSON.stringify(userWorkshops));
+                }
+                
+                // Remove from workshopsDB (if it was a default one edited)
+                const dbIndex = workshopsDB.findIndex(w => w.id === id);
+                if (dbIndex > -1) {
+                    workshopsDB.splice(dbIndex, 1);
+                    localStorage.setItem('bhat_workshops_db', JSON.stringify(workshopsDB));
+                }
+
+                allWorkshops = [...workshopsDB, ...userWorkshops];
+                
+                // Clean up related data
+                localStorage.removeItem('status_' + id);
+                delete reviewsDB[id];
+                localStorage.setItem('bhat_reviews', JSON.stringify(reviewsDB));
+                
+                // Remove from followed
+                followedWorkshops = followedWorkshops.filter(fid => fid !== id);
+                localStorage.setItem('bhat_followed', JSON.stringify(followedWorkshops));
+
+                // Remove bookings
+                bookings = bookings.filter(b => b.workshopId !== id);
+                localStorage.setItem('bhat_bookings', JSON.stringify(bookings));
+
+                showModal("Workshop deleted successfully.");
+                renderDashboard();
+                if(document.getElementById('explore').classList.contains('active')) {
+                    renderWorkshops(allWorkshops);
+                }
+                updateFeaturedWorkshopDOM();
+            });
+        }
+
+        function openEditWorkshopModal(id) {
+            const workshop = allWorkshops.find(w => w.id === id);
+            if (!workshop) return;
+
+            document.getElementById('editWId').value = workshop.id;
+            document.getElementById('editWName').value = workshop.name;
+            document.getElementById('editWOwner').value = workshop.owner || '';
+            document.getElementById('editWPhone').value = workshop.phone;
+            document.getElementById('editWLocation').value = workshop.location;
+            document.getElementById('editWServices').value = workshop.services.join(', ');
+            
+            if (workshop.links) {
+                document.getElementById('editWLinkCall').value = workshop.links.call || '';
+                document.getElementById('editWLinkDirections').value = workshop.links.directions || '';
+                document.getElementById('editWLinkYoutube').value = workshop.links.youtube || '';
+                document.getElementById('editWLinkInstagram').value = workshop.links.instagram || '';
+            } else {
+                document.getElementById('editWLinkCall').value = '';
+                document.getElementById('editWLinkDirections').value = '';
+                document.getElementById('editWLinkYoutube').value = '';
+                document.getElementById('editWLinkInstagram').value = '';
+            }
+
+            const modal = document.getElementById('editWorkshopModal');
+            const content = document.getElementById('editWorkshopContent');
+            modal.classList.remove('hidden');
+            void modal.offsetWidth;
+            modal.classList.remove('opacity-0');
+            content.classList.remove('scale-95');
+            content.classList.add('scale-100');
+        }
+
+        function closeEditWorkshopModal() {
+            const modal = document.getElementById('editWorkshopModal');
+            const content = document.getElementById('editWorkshopContent');
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        document.getElementById('editWorkshopForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('editWId').value;
+            const workshop = allWorkshops.find(w => w.id === id);
+            
+            if (workshop) {
+                workshop.name = document.getElementById('editWName').value;
+                workshop.owner = document.getElementById('editWOwner').value;
+                workshop.location = document.getElementById('editWLocation').value;
+                workshop.services = document.getElementById('editWServices').value.split(',').map(s => s.trim());
+                
+                workshop.links = {
+                    call: document.getElementById('editWLinkCall').value,
+                    directions: document.getElementById('editWLinkDirections').value,
+                    youtube: document.getElementById('editWLinkYoutube').value,
+                    instagram: document.getElementById('editWLinkInstagram').value
+                };
+
+                // Update in respective storage
+                const userIndex = userWorkshops.findIndex(w => w.id === id);
+                if (userIndex > -1) {
+                    userWorkshops[userIndex] = workshop;
+                    localStorage.setItem('bhat_user_workshops', JSON.stringify(userWorkshops));
+                } else {
+                    const dbIndex = workshopsDB.findIndex(w => w.id === id);
+                    if (dbIndex > -1) {
+                        workshopsDB[dbIndex] = workshop;
+                        localStorage.setItem('bhat_workshops_db', JSON.stringify(workshopsDB));
+                    }
+                }
+
+                closeEditWorkshopModal();
+                showModal("Workshop details updated successfully.");
+                renderDashboard();
+                if(document.getElementById('explore').classList.contains('active')) {
+                    renderWorkshops(allWorkshops);
+                }
+                updateFeaturedWorkshopDOM();
+            }
+        });
+
+        function handleWorkshopPhotoUpload(event, id) {
+            const files = event.target.files;
+            if (files && files.length > 0) {
+                const workshop = allWorkshops.find(w => w.id === id);
+                if (!workshop) return;
+
+                if (!workshop.gallery) workshop.gallery = [];
+
+                Array.from(files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // Add to gallery, keep max 5 images to avoid localstorage quota issues
+                        workshop.gallery.unshift(e.target.result);
+                        if (workshop.gallery.length > 5) workshop.gallery.pop();
+                        
+                        // Set first image as main image
+                        workshop.image = workshop.gallery[0];
+
+                        // Save
+                        const userIndex = userWorkshops.findIndex(w => w.id === id);
+                        if (userIndex > -1) {
+                            userWorkshops[userIndex] = workshop;
+                            localStorage.setItem('bhat_user_workshops', JSON.stringify(userWorkshops));
+                        } else {
+                            const dbIndex = workshopsDB.findIndex(w => w.id === id);
+                            if (dbIndex > -1) {
+                                workshopsDB[dbIndex] = workshop;
+                                localStorage.setItem('bhat_workshops_db', JSON.stringify(workshopsDB));
+                            }
+                        }
+                        
+                        renderDashboard();
+                        if(document.getElementById('explore').classList.contains('active')) {
+                            renderWorkshops(allWorkshops);
+                        }
+                        updateFeaturedWorkshopDOM();
+                    };
+                    reader.readAsDataURL(file);
+                });
+                showModal("Photos updated successfully.");
+            }
+        }
+
+        function updateBookingStatus(bookingId, newStatus) {
+            const booking = bookings.find(b => b.id === bookingId);
+            if (booking) {
+                booking.status = newStatus;
+                localStorage.setItem('bhat_bookings', JSON.stringify(bookings));
+                renderDashboard();
+            }
+        }
+
+        function triggerSOS() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        const mapsLink = `https://www.google.com/maps?q=${lat},${lng}`;
+                        const message = `*EMERGENCY SOS*\nI need immediate mechanic assistance at my location:\n${mapsLink}\n\nSent via Bhat Network.`;
+                        
+                        // Find nearest open workshop (mock logic - just picks first open one or admin)
+                        const openWorkshops = allWorkshops.filter(w => localStorage.getItem('status_' + w.id) !== 'closed');
+                        const targetPhone = openWorkshops.length > 0 ? openWorkshops[0].phone : '9906584655';
+                        
+                        window.open(`https://wa.me/91${targetPhone}?text=${encodeURIComponent(message)}`, '_blank');
+                    },
+                    (error) => {
+                        showModal("Could not get your location. Please ensure location services are enabled.");
+                        // Fallback without location
+                        const message = `*EMERGENCY SOS*\nI need immediate mechanic assistance.\n\nSent via Bhat Network.`;
+                        window.open(`https://wa.me/919906584655?text=${encodeURIComponent(message)}`, '_blank');
+                    }
+                );
+            } else {
+                showModal("Geolocation is not supported by this browser.");
+            }
+        }
+    </script>
 </body>
-                                  </html>
+                            </html>
